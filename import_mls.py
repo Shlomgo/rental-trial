@@ -13,6 +13,7 @@ import os
 
 from config.metros import get_metro
 from src import csv_io
+from src.community_match import load_known_communities
 from src.mls_import import import_mls_export
 from src.rental_import import load_known_streets
 
@@ -34,10 +35,22 @@ def main():
         )
 
     known_streets = load_known_streets(communities_path)
-    matched_rows, unmatched = import_mls_export(args.export_csv, metro_config, known_streets)
+    known_communities = load_known_communities(communities_path)
+    matched_rows, new_streets, unmatched, ambiguous = import_mls_export(
+        args.export_csv, metro_config, known_streets, known_communities
+    )
 
-    print(f"{len(matched_rows)} listings matched a known community street.")
-    print(f"{unmatched} listings did not match (different city/street, outside tracked communities).")
+    print(f"{len(matched_rows)} listings matched (by street name or by subdivision name).")
+    if new_streets:
+        print(f"{len(new_streets)} new street(s) discovered via subdivision match (not in the original sitemap scrape):")
+        for s in new_streets:
+            print(f"   {s['community_name']} ({s['builder']}): {s['street_name']}")
+    print(f"{ambiguous} listing(s) had a subdivision name matching more than one known community - skipped rather than guessed.")
+    print(f"{unmatched} listings did not match any known street or subdivision.")
+
+    if new_streets:
+        csv_io.upsert_communities(communities_path, new_streets)
+        print(f"Added {len(new_streets)} new street row(s) to {communities_path}")
 
     rentals_path = os.path.join(
         args.output_dir, f"{metro_config.METRO_SLUG}-rentals.csv"

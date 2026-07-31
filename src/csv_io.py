@@ -70,30 +70,62 @@ def upsert_communities(path, new_rows):
             writer.writerow({k: row.get(k, "") for k in COMMUNITIES_COLUMNS})
 
 
-_MERGE_FIELDS = [
-    "purchase_price", "rent_price", "list_date", "rent_date",
-    "days_on_market",
-]
+# Fields that describe one specific rental *episode* (a single listing/
+# lease), as opposed to fields that are true regardless of which episode
+# we're looking at (purchase_price) or are pure citations (source_url).
+_EPISODE_FIELDS = ["rent_price", "list_date", "rent_date", "days_on_market", "status"]
+
+
+def _episode_date(row):
+    """The date that identifies which rental episode a row describes.
+    ISO 'YYYY-MM-DD' strings sort correctly as plain strings."""
+    return row.get("rent_date") or row.get("list_date") or ""
 
 
 def _merge_row(prior, new_row):
-    """Different sources fill in different fields for the same property
-    (e.g. Zillow gives a rent price + list_date, an MLS export gives
-    days_on_market + an MLS-number citation) - a blind overwrite would
-    throw away whichever source ran first. Prefer the new value where the
-    source has one; otherwise keep what's already on file."""
-    merged = dict(prior) if prior else {}
-    merged.update(new_row)  # new row's non-key fields as the starting point
-    for field in _MERGE_FIELDS:
-        if not new_row.get(field) and prior and prior.get(field):
-            merged[field] = prior[field]
-    if prior:
-        old_src, new_src = prior.get("source_url", ""), new_row.get("source_url", "")
-        if old_src and new_src and old_src != new_src:
-            merged["source_url"] = f"{old_src} | {new_src}"
-        elif not new_src:
-            merged["source_url"] = old_src
-    return merged
+    """The same address can appear multiple times across (or within) an
+    import - either as different sources describing the SAME rental episode
+    (Zillow gives a price, an MLS export adds days-on-market), or as
+    genuinely different, chronologically distinct episodes (the house was
+    rented in 2022, then again in 2026). Blending fields across two
+    different episodes produces nonsense (e.g. a "currently for rent"
+    status paired with a 2022 list date), so: if the new row's episode is
+    the same as or newer than what's on file, adopt its episode fields
+    wholesale; otherwise treat it as supplementary and only fill gaps.
+
+    Returns (merged_dict, adopted_new_episode: bool)."""
+    if not prior:
+        return dict(new_row), True
+
+    new_ep, prior_ep = _episode_date(new_row), _episode_date(prior)
+    adopted_new = bool(new_ep) and (not prior_ep or new_ep >= prior_ep)
+
+    merged = dict(prior)
+    if adopted_new:
+        merged.update(new_row)
+    else:
+        for field, value in new_row.items():
+            if field in _EPISODE_FIELDS:
+                if not merged.get(field) and value:
+                    merged[field] = value
+            elif value:
+                merged[field] = value
+
+    # Sale price isn't tied to a rental episode - always fine to backfill.
+    if new_row.get("purchase_price"):
+        merged["purchase_price"] = new_row["purchase_price"]
+    elif prior.get("purchase_price"):
+        merged["purchase_price"] = prior["purchase_price"]
+
+    old_src, new_src = prior.get("source_url", ""), new_row.get("source_url", "")
+    if old_src and new_src and old_src != new_src:
+        merged["source_url"] = f"{old_src} | {new_src}"
+    elif new_src:
+        merged["source_url"] = new_src
+    else:
+        merged["source_url"] = old_src
+
+    return merged, adopted_new
 
 
 def upsert_rentals(path, new_rows, today_str):
@@ -109,9 +141,9 @@ def upsert_rentals(path, new_rows, today_str):
         key = _row_key(row, key_fields, normalize_address=True)
         prior = existing.get(key)
 
-        merged = _merge_row(prior, row)
+        merged, adopted_new = _merge_row(prior, row)
         merged["last_checked_date"] = today_str
-        if prior and prior.get("status") and prior.get("status") != row.get("status"):
+        if adopted_new and prior and prior.get("status") and prior.get("status") != row.get("status"):
             merged["status_changed"] = f"{prior['status']} -> {row.get('status')} ({today_str})"
         else:
             merged["status_changed"] = prior.get("status_changed", "") if prior else ""
