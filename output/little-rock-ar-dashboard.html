@@ -1,0 +1,686 @@
+<title>Little Rock New-Construction Rental Tracker</title>
+    <style>
+    @media (prefers-color-scheme: light) {
+      :root { color-scheme: light; }
+    }
+    :root {
+      --paper: #E7ECE2;
+      --paper-raised: #FBFCF8;
+      --ink: #16211C;
+      --ink-soft: #56655C;
+      --ink-faint: #8B978D;
+      --line: #DAE0D6;
+      --line-strong: #C2CBBC;
+      --accent: #2B6E4E;
+      --accent-ink: #FFFFFF;
+      --accent-soft: #E1EEE6;
+      --clay: #A85434;
+      --clay-soft: #F3E4DB;
+      --slate: #3E5C74;
+      --slate-soft: #E1E8ED;
+      --status-active: #2B6E4E;
+      --status-active-soft: #E1EEE6;
+      --status-past: #5B6B62;
+      --status-past-soft: #E6E9E3;
+      --status-unknown: #9C6B18;
+      --status-unknown-soft: #F3E9D4;
+      --shadow: 0 1px 2px rgba(22,33,28,0.06), 0 1px 1px rgba(22,33,28,0.04);
+      --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #10160F;
+        --paper-raised: #16201A;
+        --ink: #E6ECE4;
+        --ink-soft: #93A398;
+        --ink-faint: #5E6D64;
+        --line: #263028;
+        --line-strong: #34413A;
+        --accent: #59BC8C;
+        --accent-ink: #0C1710;
+        --accent-soft: #16281F;
+        --clay: #E2895A;
+        --clay-soft: #2C1F17;
+        --slate: #86ADCE;
+        --slate-soft: #182530;
+        --status-active: #59BC8C;
+        --status-active-soft: #16281F;
+        --status-past: #9AA79E;
+        --status-past-soft: #1B231D;
+        --status-unknown: #D9A94B;
+        --status-unknown-soft: #2A2214;
+        --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+      }
+    }
+    :root[data-theme="dark"] {
+      --paper: #10160F; --paper-raised: #16201A; --ink: #E6ECE4; --ink-soft: #93A398;
+      --ink-faint: #5E6D64; --line: #263028; --line-strong: #34413A; --accent: #59BC8C;
+      --accent-ink: #0C1710; --accent-soft: #16281F; --clay: #E2895A; --clay-soft: #2C1F17;
+      --slate: #86ADCE; --slate-soft: #182530; --status-active: #59BC8C; --status-active-soft: #16281F;
+      --status-past: #9AA79E; --status-past-soft: #1B231D; --status-unknown: #D9A94B; --status-unknown-soft: #2A2214;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+      color-scheme: dark;
+    }
+    :root[data-theme="light"] {
+      --paper: #E7ECE2; --paper-raised: #FBFCF8; --ink: #16211C; --ink-soft: #56655C;
+      --ink-faint: #8B978D; --line: #DAE0D6; --line-strong: #C2CBBC; --accent: #2B6E4E;
+      --accent-ink: #FFFFFF; --accent-soft: #E1EEE6; --clay: #A85434; --clay-soft: #F3E4DB;
+      --slate: #3E5C74; --slate-soft: #E1E8ED; --status-active: #2B6E4E; --status-active-soft: #E1EEE6;
+      --status-past: #5B6B62; --status-past-soft: #E6E9E3; --status-unknown: #9C6B18; --status-unknown-soft: #F3E9D4;
+      --shadow: 0 1px 2px rgba(22,33,28,0.06), 0 1px 1px rgba(22,33,28,0.04);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    ::selection { background: var(--accent-soft); color: var(--ink); }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ---- Header ---- */
+    header.page {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 32px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 34px;
+      letter-spacing: -0.01em;
+      margin: 2px 0 4px;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+    .subhead {
+      color: var(--ink-soft);
+      font-size: 14.5px;
+      max-width: 62ch;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+    .meta-row span b { color: var(--ink-soft); font-weight: 600; }
+
+    /* ---- Stat cards ---- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .stat {
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+    .stat .n {
+      font-family: var(--serif);
+      font-size: 28px;
+      line-height: 1;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat .label {
+      margin-top: 6px;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-faint);
+    }
+
+    /* ---- Tabs ---- */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab-btn {
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 10px 4px;
+      margin-right: 22px;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .tab-btn:hover { color: var(--ink-soft); }
+    .tab-btn.active { color: var(--ink); border-bottom-color: var(--accent); }
+    .tab-btn .count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      margin-left: 4px;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ---- Filter bar ---- */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .search {
+      flex: 1 1 220px;
+      min-width: 180px;
+      position: relative;
+    }
+    .search input {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 13.5px;
+      padding: 8px 12px 8px 30px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      background: var(--paper-raised);
+      color: var(--ink);
+    }
+    .search input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: -1px;
+    }
+    .search::before {
+      content: "";
+      position: absolute;
+      left: 10px; top: 50%;
+      width: 11px; height: 11px;
+      transform: translateY(-50%);
+      border: 1.5px solid var(--ink-faint);
+      border-radius: 50%;
+    }
+    .search::after {
+      content: "";
+      position: absolute;
+      left: 18px; top: 62%;
+      width: 5px; height: 1.5px;
+      background: var(--ink-faint);
+      transform: rotate(45deg);
+    }
+    .chipset { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 11px;
+      border-radius: 100px;
+      border: 1px solid var(--line-strong);
+      background: var(--paper-raised);
+      color: var(--ink-soft);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.12s ease;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--ink); }
+    .chip.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+    :root[data-theme="dark"] .chip.active, @media (prefers-color-scheme: dark) { }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+    /* ---- Table ---- */
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: var(--paper-raised);
+      box-shadow: var(--shadow);
+    }
+    table { border-collapse: collapse; width: 100%; min-width: 760px; }
+    thead th {
+      position: sticky; top: 0;
+      background: var(--paper-raised);
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-faint);
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--line-strong);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    thead th:hover { color: var(--ink); }
+    thead th .arrow { font-size: 9px; margin-left: 3px; opacity: 0.55; }
+    thead th.sorted { color: var(--accent); }
+    thead th.sorted .arrow { opacity: 1; }
+    tbody tr { border-bottom: 1px solid var(--line); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--accent-soft); }
+    tbody td {
+      padding: 11px 14px;
+      vertical-align: top;
+      font-size: 13.5px;
+    }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    td.mono, .mono { font-family: var(--mono); font-size: 12.5px; }
+    td.addr { color: var(--ink); }
+    td.addr .city { color: var(--ink-faint); font-size: 12px; }
+    td.community { font-weight: 600; }
+    td.community .street { display: block; font-weight: 400; color: var(--ink-faint); font-size: 12px; margin-top: 1px; font-family: var(--mono); }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    .badge.drh { background: var(--clay-soft); color: var(--clay); }
+    .badge.lennar { background: var(--slate-soft); color: var(--slate); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px 3px 7px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+    .pill.active { background: var(--status-active-soft); color: var(--status-active); }
+    .pill.active::before { background: var(--status-active); }
+    .pill.past { background: var(--status-past-soft); color: var(--status-past); }
+    .pill.past::before { background: var(--status-past); }
+    .pill.unknown { background: var(--status-unknown-soft); color: var(--status-unknown); }
+    .pill.unknown::before { background: var(--status-unknown); }
+
+    .src a, .src span { color: var(--ink-faint); font-size: 12px; text-decoration: none; border-bottom: 1px dotted var(--ink-faint); }
+    .src a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .blank { color: var(--ink-faint); }
+
+    .empty-row td { text-align: center; color: var(--ink-faint); padding: 40px 14px; font-size: 13.5px; }
+
+    .foot-note {
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+    }
+    .result-count { font-size: 12px; color: var(--ink-faint); font-family: var(--mono); margin-bottom: 10px; }
+
+    a:focus-visible, button:focus-visible, input:focus-visible, th:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 27px; }
+      .wrap { padding: 28px 16px 60px; }
+    }
+    </style>
+
+    <div class="wrap">
+      <header class="page">
+        <span class="eyebrow">New-Construction Rental Tracker</span>
+        <h1>Little Rock, AR Metro</h1>
+        <p class="subhead">Rental activity on streets built by D.R. Horton and Lennar, cross-referenced from builder sitemaps, MLS lease records, and manually verified listings.</p>
+        <div class="meta-row">
+          <span>Data as of <b id="generated-date"></b></span>
+          <span><span class="badge drh" style="margin-right:5px">D.R. Horton</span><span class="badge lennar">Lennar</span></span>
+        </div>
+      </header>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-panel="rentals">Rentals <span class="count" id="count-rentals"></span></button>
+        <button class="tab-btn" data-panel="communities">Communities &amp; streets <span class="count" id="count-communities"></span></button>
+      </div>
+
+      <section class="panel active" id="panel-rentals">
+        <div class="filters">
+          <div class="search"><input type="text" id="rental-search" placeholder="Search address, community, or street&hellip;"></div>
+          <div class="chipset" id="builder-chips"></div>
+          <div class="chipset" id="status-chips"></div>
+        </div>
+        <div class="result-count" id="rental-result-count"></div>
+        <div class="table-scroll">
+          <table id="rental-table">
+            <thead><tr>
+              <th data-key="community_name">Community<span class="arrow">&#9662;</span></th>
+              <th data-key="full_address">Address<span class="arrow">&#9662;</span></th>
+              <th data-key="rent_price" class="num">Rent<span class="arrow">&#9662;</span></th>
+              <th data-key="status">Status<span class="arrow">&#9662;</span></th>
+              <th data-key="list_date">Listed<span class="arrow">&#9662;</span></th>
+              <th data-key="rent_date">Rented/removed<span class="arrow">&#9662;</span></th>
+              <th data-key="days_on_market" class="num">Days<span class="arrow">&#9662;</span></th>
+              <th data-key="source_url">Source</th>
+            </tr></thead>
+            <tbody id="rental-tbody"></tbody>
+          </table>
+        </div>
+        <p class="foot-note">Rent shown is the most recently known listed price. "Days" is days on market for that listing. Blank fields mean the source didn't report that value — not guessed.</p>
+      </section>
+
+      <section class="panel" id="panel-communities">
+        <div class="filters">
+          <div class="search"><input type="text" id="community-search" placeholder="Search community or street&hellip;"></div>
+          <div class="chipset" id="community-builder-chips"></div>
+        </div>
+        <div class="result-count" id="community-result-count"></div>
+        <div class="table-scroll">
+          <table id="community-table">
+            <thead><tr>
+              <th data-key="community_name">Community<span class="arrow">&#9662;</span></th>
+              <th data-key="builder">Builder<span class="arrow">&#9662;</span></th>
+              <th data-key="phase">Phase<span class="arrow">&#9662;</span></th>
+              <th data-key="street_name">Street<span class="arrow">&#9662;</span></th>
+            </tr></thead>
+            <tbody id="community-tbody"></tbody>
+          </table>
+        </div>
+        <p class="foot-note">One row per street. A blank street means the community has no confirmed street yet (pre-construction or sold out with no MLS record found).</p>
+      </section>
+    </div>
+
+    <script>
+    const COMMUNITIES = [{"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Warwick Dr"}, {"metro_area": "Little Rock, AR", "community_name": "Wolfsbridge", "builder": "D.R. Horton", "phase": "", "street_name": "Wolfsbridge Loop"}, {"metro_area": "Little Rock, AR", "community_name": "The Villas Hope Valley", "builder": "D.R. Horton", "phase": "", "street_name": "Preston Ln"}, {"metro_area": "Little Rock, AR", "community_name": "Stone Canyon", "builder": "D.R. Horton", "phase": "", "street_name": "Bighorn Trail"}, {"metro_area": "Little Rock, AR", "community_name": "Stone Canyon", "builder": "D.R. Horton", "phase": "", "street_name": "Stone Canyon Drive"}, {"metro_area": "Little Rock, AR", "community_name": "The Reserve At Country Club", "builder": "D.R. Horton", "phase": "", "street_name": "Cain Trail"}, {"metro_area": "Little Rock, AR", "community_name": "The Reserve At Country Club", "builder": "D.R. Horton", "phase": "", "street_name": "Lainey Drive"}, {"metro_area": "Little Rock, AR", "community_name": "River Plantation", "builder": "D.R. Horton", "phase": "", "street_name": "Plantation Dr"}, {"metro_area": "Little Rock, AR", "community_name": "The Vineyard", "builder": "D.R. Horton", "phase": "", "street_name": "E Sunbelt Court"}, {"metro_area": "Little Rock, AR", "community_name": "Crescent Grove", "builder": "D.R. Horton", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Moonlight Meadows", "builder": "D.R. Horton", "phase": "", "street_name": "Moonlight Graham Road"}, {"metro_area": "Little Rock, AR", "community_name": "Midland Estates", "builder": "Lennar", "phase": "Phase 1", "street_name": "Sam Tillery Dr"}, {"metro_area": "Little Rock, AR", "community_name": "The Meadows At Parkway Trails", "builder": "Lennar", "phase": "", "street_name": "Chesapeake Trl"}, {"metro_area": "Little Rock, AR", "community_name": "The Meadows At Parkway Trails", "builder": "Lennar", "phase": "", "street_name": "Potomac Trl"}, {"metro_area": "Little Rock, AR", "community_name": "Farmhouse At Ridge Creek", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Southfork Ranch", "builder": "Lennar", "phase": "", "street_name": "Powder River Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Southfork Ranch", "builder": "Lennar", "phase": "", "street_name": "Southfork Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Cottage Walk", "builder": "Lennar", "phase": "", "street_name": "Rambling Brook Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Panther Cove", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Rosemary Fields", "builder": "Lennar", "phase": "", "street_name": "Flat Wood Ave"}, {"metro_area": "Little Rock, AR", "community_name": "Rosemary Fields", "builder": "Lennar", "phase": "", "street_name": "Flatwood Ave"}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Bassett St"}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Croft Ave"}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Hollywood Ave"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Maddison Rachael"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Nona Ruth Lane"}, {"metro_area": "Little Rock, AR", "community_name": "Gold Creek Falls", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Nolan Place", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Springlake Trails", "builder": "Lennar", "phase": "", "street_name": "Duck Creek Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Springlake Trails", "builder": "Lennar", "phase": "", "street_name": "Thompson Branch Trl"}, {"metro_area": "Little Rock, AR", "community_name": "Cypress Bend", "builder": "Lennar", "phase": "", "street_name": "Jonathan Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Cypress Bend", "builder": "Lennar", "phase": "", "street_name": "Lucy Lane"}, {"metro_area": "Little Rock, AR", "community_name": "The Vineyard", "builder": "Lennar", "phase": "", "street_name": "Cabernet Way"}, {"metro_area": "Little Rock, AR", "community_name": "The Vineyard", "builder": "Lennar", "phase": "", "street_name": "E Concord Road"}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Woods At White Oak", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Magnolia Manor", "builder": "Lennar", "phase": "", "street_name": "Magnolia Springs Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Magnolia Manor", "builder": "Lennar", "phase": "", "street_name": "Manor Court"}, {"metro_area": "Little Rock, AR", "community_name": "Magnolia Manor", "builder": "Lennar", "phase": "", "street_name": "Manor Oaks Blvd"}, {"metro_area": "Little Rock, AR", "community_name": "Deerfield", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Little Rock, AR", "community_name": "Cottage Walk", "builder": "Lennar", "phase": "", "street_name": "Raven Walk Dr"}, {"metro_area": "Little Rock, AR", "community_name": "Deerfield", "builder": "Lennar", "phase": "", "street_name": "Ten Point Lane"}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "W Westwood Creek Drive"}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Mason Drive"}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Northwood Creek Drive"}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Lori Kaye Drive"}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Cypress Knee Drive"}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Olympic Drive"}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Huntington Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Laney Loop"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Kinley Brook Lane"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Sarah Alyse Lane"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Kyndall Lauren Lane"}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Swayze Rhys Lane"}, {"metro_area": "Little Rock, AR", "community_name": "Cypress Bend", "builder": "Lennar", "phase": "", "street_name": "IM Drive"}, {"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Newark"}, {"metro_area": "Little Rock, AR", "community_name": "Cypress Bend", "builder": "Lennar", "phase": "", "street_name": "Sofia Drive"}];
+    const RENTALS = [{"metro_area": "Little Rock, AR", "community_name": "Midland Estates", "builder": "Lennar", "phase": "Phase 1", "street_name": "Sam Tillery Dr", "full_address": "2356 Sam Tillery Dr, Alexander, AR 72002", "purchase_price": "222900", "rent_price": "1795", "list_date": "2026-07-15", "rent_date": "2026-07-31", "days_on_market": "16", "status": "previously rented", "source_url": "https://www.zillow.com/b/building/34.669003,-92.48261_ll/", "last_checked_date": "2026-07-31", "status_changed": "currently for rent -> previously rented (2026-07-31)"}, {"metro_area": "Little Rock, AR", "community_name": "Cottage Walk", "builder": "Lennar", "phase": "", "street_name": "Rambling Brook Drive", "full_address": "1604 Rambling Brook Drive, Benton, AR", "purchase_price": "", "rent_price": "2000", "list_date": "2026-07-24", "rent_date": "", "days_on_market": "7", "status": "currently for rent", "source_url": "https://www.zillow.com/homedetails/1604-Rambling-Brook-Dr-Benton-AR-72015/462316832_zpid/ | MLS #26030160", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Warwick Dr", "full_address": "6312 Warwick Dr, Bryant, AR 72002", "purchase_price": "", "rent_price": "2200", "list_date": "2026-06-17", "rent_date": "", "days_on_market": "", "status": "currently for rent", "source_url": "https://www.zillow.com/homedetails/6312-Warwick-Dr-Bryant-AR-72002/460975832_zpid/", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Hollywood Ave", "full_address": "6648 Hollywood Ave, Benton, AR 72019", "purchase_price": "", "rent_price": "1745", "list_date": "2026-06-20", "rent_date": "", "days_on_market": "", "status": "currently for rent", "source_url": "https://www.zillow.com/homedetails/6648-Hollywood-Ave-Benton-AR-72019/460872553_zpid/", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Hollywood Ave", "full_address": "6673 Hollywood Ave, Benton, AR 72019", "purchase_price": "", "rent_price": "1845", "list_date": "2026-06-20", "rent_date": "", "days_on_market": "", "status": "currently for rent", "source_url": "https://www.zillow.com/homedetails/6673-Hollywood-Ave-Benton-AR-72019/461413230_zpid/", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Cottage Walk", "builder": "Lennar", "phase": "", "street_name": "Raven Walk Dr", "full_address": "1040 Raven Walk Dr, Benton, AR 72015", "purchase_price": "215400", "rent_price": "1600", "list_date": "2026-07-07", "rent_date": "", "days_on_market": "", "status": "currently for rent", "source_url": "", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Cottage Walk", "builder": "Lennar", "phase": "", "street_name": "Raven Walk Dr", "full_address": "1028 Raven Walk Dr, Benton, AR 72015", "purchase_price": "202450", "rent_price": "1525", "list_date": "2026-07-08", "rent_date": "", "days_on_market": "", "status": "currently for rent", "source_url": "", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Cottage Walk", "builder": "Lennar", "phase": "", "street_name": "Raven Walk Dr", "full_address": "1056 Raven Walk Dr, Benton, AR 72015", "purchase_price": "", "rent_price": "1600", "list_date": "2026-07-27", "rent_date": "", "days_on_market": "", "status": "currently for rent", "source_url": "", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Deerfield", "builder": "Lennar", "phase": "", "street_name": "Ten Point Lane", "full_address": "51 Ten Point Lane, Ward, AR", "purchase_price": "", "rent_price": "1400", "list_date": "2025-11-28", "rent_date": "2025-12-09", "days_on_market": "11", "status": "previously rented", "source_url": "MLS #25047297", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Westwood Creek Drive", "full_address": "8609 Westwood Creek Drive, North Little Rock, AR", "purchase_price": "", "rent_price": "1500", "list_date": "2026-08-26", "rent_date": "2026-10-31", "days_on_market": "66", "status": "previously rented", "source_url": "MLS #25034361 | MLS #22018156", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Olympic Drive", "full_address": "4520 Olympic Drive, Benton, AR", "purchase_price": "", "rent_price": "1550", "list_date": "2027-02-24", "rent_date": "2027-03-31", "days_on_market": "35", "status": "previously rented", "source_url": "MLS #24025695 | MLS #25049796", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Huntington Drive", "full_address": "1072 Huntington Drive, Benton, AR", "purchase_price": "", "rent_price": "1500", "list_date": "2025-09-17", "rent_date": "2025-11-01", "days_on_market": "45", "status": "previously rented", "source_url": "MLS #24034262 | MLS #26029295", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Laney Loop", "full_address": "5 Laney Loop, Little Rock, AR", "purchase_price": "", "rent_price": "1550", "list_date": "", "rent_date": "", "days_on_market": "68", "status": "unknown", "source_url": "MLS #22008520", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Mason Drive", "full_address": "10904 Mason Drive, North Little Rock, AR", "purchase_price": "", "rent_price": "1550", "list_date": "2026-01-02", "rent_date": "2026-01-23", "days_on_market": "21", "status": "previously rented", "source_url": "MLS #26000289 | MLS #26021474 | MLS #26011301", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Kinley Brook Lane", "full_address": "90 Kinley Brook Lane, Cabot, AR", "purchase_price": "", "rent_price": "1550", "list_date": "2026-06-15", "rent_date": "2026-07-31", "days_on_market": "46", "status": "previously rented", "source_url": "MLS #26024128 | MLS #26007956 | MLS #26017842 | MLS #24044305", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Laney Loop", "full_address": "53 Laney Loop, Little Rock, AR", "purchase_price": "", "rent_price": "1599", "list_date": "", "rent_date": "", "days_on_market": "291", "status": "unknown", "source_url": "MLS #22007519", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Maddison Rachael", "full_address": "15 Maddison Rachael, Cabot, AR", "purchase_price": "", "rent_price": "1600", "list_date": "2026-05-06", "rent_date": "2026-05-13", "days_on_market": "7", "status": "previously rented", "source_url": "MLS #26018165", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "W Westwood Creek Drive", "full_address": "8601 W Westwood Creek Drive, Maumelle, AR", "purchase_price": "", "rent_price": "1650", "list_date": "2023-12-23", "rent_date": "2024-02-09", "days_on_market": "48", "status": "previously rented", "source_url": "MLS #23040674", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "The Grove At Centennial Valley", "builder": "Lennar", "phase": "", "street_name": "Olympic", "full_address": "4527 Olympic, Benton, AR", "purchase_price": "", "rent_price": "1650", "list_date": "", "rent_date": "", "days_on_market": "50", "status": "unknown", "source_url": "MLS #24021147", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Northwood Creek Drive", "full_address": "8701 Northwood Creek Drive, North Little Rock, AR", "purchase_price": "", "rent_price": "1679", "list_date": "", "rent_date": "", "days_on_market": "363", "status": "unknown", "source_url": "MLS #22024801", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Mason", "full_address": "10920 Mason, Maumelle, AR", "purchase_price": "", "rent_price": "1695", "list_date": "2026-01-09", "rent_date": "2026-02-18", "days_on_market": "40", "status": "previously rented", "source_url": "MLS #25048414", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Laney Loop", "full_address": "3 Laney Loop, Little Rock, AR", "purchase_price": "", "rent_price": "1699", "list_date": "", "rent_date": "", "days_on_market": "63", "status": "unknown", "source_url": "MLS #22011568", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Laney Loop", "full_address": "7 Laney Loop, Little Rock, AR", "purchase_price": "", "rent_price": "1700", "list_date": "", "rent_date": "", "days_on_market": "72", "status": "unknown", "source_url": "MLS #22017631", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Sarah Alyse Lane", "full_address": "60 Sarah Alyse Lane, Cabot, AR", "purchase_price": "", "rent_price": "1750", "list_date": "2025-09-25", "rent_date": "2025-11-11", "days_on_market": "47", "status": "previously rented", "source_url": "MLS #25038555 | MLS #25016396", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Kyndall Lauren Lane", "full_address": "110 Kyndall Lauren Lane, Cabot, AR", "purchase_price": "", "rent_price": "1750", "list_date": "2025-04-28", "rent_date": "2025-07-23", "days_on_market": "86", "status": "previously rented", "source_url": "MLS #25016551", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Lori Kaye Drive", "full_address": "10617 Lori Kaye Drive, Maumelle, AR", "purchase_price": "", "rent_price": "1800", "list_date": "", "rent_date": "", "days_on_market": "63", "status": "unknown", "source_url": "MLS #24044411", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Cypress Knee Dr", "full_address": "10508 Cypress Knee Dr, North Little Rock, AR", "purchase_price": "", "rent_price": "1900", "list_date": "2024-11-17", "rent_date": "2024-12-10", "days_on_market": "23", "status": "previously rented", "source_url": "MLS #24028490 | MLS #24041765", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Southfork Ranch", "builder": "Lennar", "phase": "", "street_name": "Powder River Drive", "full_address": "109 Powder River Drive, Beebe, AR", "purchase_price": "", "rent_price": "1800", "list_date": "", "rent_date": "", "days_on_market": "22", "status": "currently for rent", "source_url": "MLS #26027670", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stone Canyon", "builder": "D.R. Horton", "phase": "", "street_name": "Bighorn Trail", "full_address": "245 Bighorn Trail, Maumelle, AR", "purchase_price": "", "rent_price": "1850", "list_date": "2026-04-25", "rent_date": "2026-05-13", "days_on_market": "18", "status": "previously rented", "source_url": "MLS #26016647", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Swayze Rhys Lane", "full_address": "85 Swayze Rhys Lane, Cabot, AR", "purchase_price": "", "rent_price": "1850", "list_date": "2025-06-07", "rent_date": "2025-09-30", "days_on_market": "115", "status": "previously rented", "source_url": "MLS #25021659", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stone Canyon", "builder": "D.R. Horton", "phase": "", "street_name": "Bighorn Trail", "full_address": "240 Bighorn Trail, Maumelle, AR", "purchase_price": "", "rent_price": "1850", "list_date": "2026-04-16", "rent_date": "2026-04-24", "days_on_market": "8", "status": "previously rented", "source_url": "MLS #26015179", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Northwood Creek Drive", "full_address": "8705 Northwood Creek Drive, North Little Rock, AR", "purchase_price": "", "rent_price": "1899", "list_date": "", "rent_date": "", "days_on_market": "78", "status": "unknown", "source_url": "MLS #22025875", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Northwood Creek Drive", "full_address": "8801 Northwood Creek Drive, North Little Rock, AR", "purchase_price": "", "rent_price": "1900", "list_date": "", "rent_date": "", "days_on_market": "94", "status": "unknown", "source_url": "MLS #25023727", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "White Oak Crossing", "builder": "Lennar", "phase": "", "street_name": "Northwood Creek", "full_address": "8700 Northwood Creek, North Little Rock, AR", "purchase_price": "", "rent_price": "1900", "list_date": "", "rent_date": "", "days_on_market": "26", "status": "unknown", "source_url": "MLS #25029682", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Cypress Bend", "builder": "Lennar", "phase": "", "street_name": "IM Drive", "full_address": "132 IM Drive, Maumelle, AR", "purchase_price": "", "rent_price": "1950", "list_date": "", "rent_date": "", "days_on_market": "86", "status": "unknown", "source_url": "MLS #24035749", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Wolfsbridge", "builder": "D.R. Horton", "phase": "", "street_name": "Wolfsbridge Loop", "full_address": "61 Wolfsbridge Loop, Cabot, AR", "purchase_price": "", "rent_price": "2000", "list_date": "2026-05-20", "rent_date": "2026-06-10", "days_on_market": "21", "status": "previously rented", "source_url": "MLS #26020328", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Stagecoach Meadows", "builder": "Lennar", "phase": "", "street_name": "Kinley Brook Lane", "full_address": "35 Kinley Brook Lane, Cabot, AR", "purchase_price": "", "rent_price": "2000", "list_date": "2026-06-05", "rent_date": "2026-06-29", "days_on_market": "24", "status": "previously rented", "source_url": "MLS #26022192", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Warwick Dr", "full_address": "6328 Warwick, Bryant, AR", "purchase_price": "", "rent_price": "2295", "list_date": "", "rent_date": "", "days_on_market": "84", "status": "currently for rent", "source_url": "MLS #26018533", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Newark", "full_address": "6420 Newark, Bryant, AR", "purchase_price": "", "rent_price": "2400", "list_date": "2026-03-28", "rent_date": "2026-05-05", "days_on_market": "38", "status": "previously rented", "source_url": "MLS #26024819 | MLS #26005027 | MLS #26008910 | MLS #25042979", "last_checked_date": "2026-07-31", "status_changed": "unknown -> previously rented (2026-07-31)"}, {"metro_area": "Little Rock, AR", "community_name": "The Reserve At Country Club", "builder": "D.R. Horton", "phase": "", "street_name": "Cain Trail", "full_address": "503 Cain Trail, Maumelle, AR", "purchase_price": "", "rent_price": "2300", "list_date": "", "rent_date": "", "days_on_market": "4", "status": "currently for rent", "source_url": "MLS #26030457", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Warwick Dr", "full_address": "6316 Warwick, Bryant, AR", "purchase_price": "", "rent_price": "2400", "list_date": "", "rent_date": "", "days_on_market": "0", "status": "currently for rent", "source_url": "MLS #26031291", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Kensington Place", "builder": "D.R. Horton", "phase": "", "street_name": "Warwick Dr", "full_address": "6308 Warwick, Bryant, AR", "purchase_price": "", "rent_price": "2400", "list_date": "", "rent_date": "", "days_on_market": "39", "status": "unknown", "source_url": "MLS #26018537", "last_checked_date": "2026-07-31", "status_changed": ""}, {"metro_area": "Little Rock, AR", "community_name": "Cypress Bend", "builder": "Lennar", "phase": "", "street_name": "Sofia Drive", "full_address": "110 Sofia Drive, Maumelle, AR", "purchase_price": "", "rent_price": "1600", "list_date": "2026-03-31", "rent_date": "2026-04-17", "days_on_market": "17", "status": "previously rented", "source_url": "MLS #26012223", "last_checked_date": "2026-07-31", "status_changed": ""}];
+    const GENERATED = "2026-07-31";
+
+    document.getElementById('generated-date').textContent = GENERATED;
+
+    function fmtMoney(v) {
+      if (!v) return '';
+      const n = parseFloat(v);
+      if (isNaN(n)) return v;
+      return '$' + n.toLocaleString('en-US');
+    }
+    function statusClass(s) {
+      if (s === 'currently for rent') return 'active';
+      if (s === 'previously rented') return 'past';
+      return 'unknown';
+    }
+    function statusLabel(s) {
+      if (s === 'currently for rent') return 'For rent';
+      if (s === 'previously rented') return 'Previously rented';
+      return 'Unknown';
+    }
+    function builderClass(b) {
+      return b === 'D.R. Horton' ? 'drh' : 'lennar';
+    }
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s == null ? '' : s;
+      return d.innerHTML;
+    }
+    function blankOr(v, cls) {
+      return v ? `<span class="${cls||''}">${esc(v)}</span>` : `<span class="blank">—</span>`;
+    }
+
+    /* ---------- Stats ---------- */
+    function renderStats() {
+      const streets = new Set(COMMUNITIES.filter(c => c.street_name).map(c => c.community_name + '|' + c.street_name));
+      const communityNames = new Set(COMMUNITIES.map(c => c.community_name));
+      const active = RENTALS.filter(r => r.status === 'currently for rent');
+      const rents = RENTALS.map(r => parseFloat(r.rent_price)).filter(n => !isNaN(n)).sort((a,b) => a-b);
+      const median = rents.length ? (rents.length % 2 ? rents[(rents.length-1)/2] : (rents[rents.length/2-1]+rents[rents.length/2])/2) : null;
+
+      const stats = [
+        { n: communityNames.size, label: 'Communities tracked' },
+        { n: streets.size, label: 'Streets on record' },
+        { n: RENTALS.length, label: 'Rentals logged' },
+        { n: active.length, label: 'Currently for rent' },
+        { n: median ? fmtMoney(median) : '—', label: 'Median rent' },
+      ];
+      document.getElementById('stats').innerHTML = stats.map(s =>
+        `<div class="stat"><div class="n">${s.n}</div><div class="label">${s.label}</div></div>`
+      ).join('');
+    }
+
+    /* ---------- Rentals table ---------- */
+    let rentalSort = { key: 'rent_date', dir: 'desc' };
+    let rentalFilters = { builder: 'all', status: 'all', q: '' };
+
+    function filteredRentals() {
+      return RENTALS.filter(r => {
+        if (rentalFilters.builder !== 'all' && r.builder !== rentalFilters.builder) return false;
+        if (rentalFilters.status !== 'all' && r.status !== rentalFilters.status) return false;
+        if (rentalFilters.q) {
+          const hay = (r.full_address + ' ' + r.community_name + ' ' + r.street_name).toLowerCase();
+          if (!hay.includes(rentalFilters.q.toLowerCase())) return false;
+        }
+        return true;
+      });
+    }
+
+    function sortRows(rows, key, dir) {
+      const numeric = key === 'rent_price' || key === 'days_on_market';
+      const dateKey = key === 'list_date' || key === 'rent_date';
+      return [...rows].sort((a, b) => {
+        let av = a[key] || '', bv = b[key] || '';
+        if (numeric) {
+          av = parseFloat(av); bv = parseFloat(bv);
+          if (isNaN(av)) av = dir === 'asc' ? Infinity : -Infinity;
+          if (isNaN(bv)) bv = dir === 'asc' ? Infinity : -Infinity;
+          return dir === 'asc' ? av - bv : bv - av;
+        }
+        if (dateKey) {
+          if (!av) av = dir === 'asc' ? '9999' : '0000';
+          if (!bv) bv = dir === 'asc' ? '9999' : '0000';
+        }
+        if (av < bv) return dir === 'asc' ? -1 : 1;
+        if (av > bv) return dir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    function sourceCell(src) {
+      if (!src) return '<span class="blank">—</span>';
+      const parts = src.split(' | ');
+      return parts.map(p => {
+        if (p.startsWith('http')) {
+          let label = 'Zillow';
+          try { label = new URL(p).hostname.replace('www.','').split('.')[0]; label = label.charAt(0).toUpperCase()+label.slice(1); } catch(e) {}
+          return `<span class="src"><a href="${esc(p)}" target="_blank" rel="noopener">${label}</a></span>`;
+        }
+        return `<span class="src"><span title="${esc(p)}">${esc(p)}</span></span>`;
+      }).join(' ');
+    }
+
+    function renderRentals() {
+      const rows = sortRows(filteredRentals(), rentalSort.key, rentalSort.dir);
+      document.getElementById('rental-result-count').textContent = `${rows.length} of ${RENTALS.length} rentals`;
+      const tbody = document.getElementById('rental-tbody');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No rentals match these filters.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td class="community">
+            <span class="badge ${builderClass(r.builder)}" style="margin-right:6px">${r.builder === 'D.R. Horton' ? 'DRH' : 'LEN'}</span>${esc(r.community_name)}${r.phase ? ' <span class="mono" style="color:var(--ink-faint);font-size:11px">'+esc(r.phase)+'</span>' : ''}
+            <span class="street">${esc(r.street_name)}</span>
+          </td>
+          <td class="addr mono">${esc(r.full_address)}</td>
+          <td class="num mono">${blankOr(fmtMoney(r.rent_price))}</td>
+          <td>
+            <span class="pill ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+            ${r.status_changed ? `<div class="mono" style="font-size:10.5px;color:var(--ink-faint);margin-top:4px">${esc(r.status_changed)}</div>` : ''}
+          </td>
+          <td class="mono">${blankOr(r.list_date)}</td>
+          <td class="mono">${blankOr(r.rent_date)}</td>
+          <td class="num mono">${blankOr(r.days_on_market)}</td>
+          <td>${sourceCell(r.source_url)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderRentalHeaders() {
+      document.querySelectorAll('#rental-table thead th').forEach(th => {
+        th.classList.toggle('sorted', th.dataset.key === rentalSort.key);
+        const arrow = th.querySelector('.arrow');
+        if (th.dataset.key === rentalSort.key) arrow.innerHTML = rentalSort.dir === 'asc' ? '&#9652;' : '&#9662;';
+      });
+    }
+
+    document.querySelectorAll('#rental-table thead th').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.key;
+        if (rentalSort.key === key) rentalSort.dir = rentalSort.dir === 'asc' ? 'desc' : 'asc';
+        else { rentalSort.key = key; rentalSort.dir = key === 'rent_price' || key === 'days_on_market' ? 'desc' : 'asc'; }
+        renderRentalHeaders();
+        renderRentals();
+      });
+    });
+
+    function renderChips() {
+      const builders = ['all', ...new Set(RENTALS.map(r => r.builder))];
+      document.getElementById('builder-chips').innerHTML = builders.map(b =>
+        `<button class="chip ${rentalFilters.builder===b?'active':''}" data-builder="${esc(b)}">${b==='all'?'All builders':esc(b)}</button>`
+      ).join('');
+      const statuses = ['all', 'currently for rent', 'previously rented', 'unknown'];
+      document.getElementById('status-chips').innerHTML = statuses.map(s =>
+        `<button class="chip ${rentalFilters.status===s?'active':''}" data-status="${esc(s)}">${s==='all'?'All statuses':statusLabel(s)}</button>`
+      ).join('');
+
+      document.querySelectorAll('#builder-chips .chip').forEach(c => c.addEventListener('click', () => {
+        rentalFilters.builder = c.dataset.builder;
+        renderChips(); renderRentals();
+      }));
+      document.querySelectorAll('#status-chips .chip').forEach(c => c.addEventListener('click', () => {
+        rentalFilters.status = c.dataset.status;
+        renderChips(); renderRentals();
+      }));
+    }
+
+    document.getElementById('rental-search').addEventListener('input', (e) => {
+      rentalFilters.q = e.target.value;
+      renderRentals();
+    });
+
+    /* ---------- Communities table ---------- */
+    let communitySort = { key: 'community_name', dir: 'asc' };
+    let communityFilters = { builder: 'all', q: '' };
+
+    function filteredCommunities() {
+      return COMMUNITIES.filter(c => {
+        if (communityFilters.builder !== 'all' && c.builder !== communityFilters.builder) return false;
+        if (communityFilters.q) {
+          const hay = (c.community_name + ' ' + c.street_name).toLowerCase();
+          if (!hay.includes(communityFilters.q.toLowerCase())) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderCommunities() {
+      const rows = sortRows(filteredCommunities(), communitySort.key, communitySort.dir);
+      document.getElementById('community-result-count').textContent = `${rows.length} of ${COMMUNITIES.length} streets`;
+      const tbody = document.getElementById('community-tbody');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No communities match these filters.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(c => `
+        <tr>
+          <td class="community">${esc(c.community_name)}</td>
+          <td><span class="badge ${builderClass(c.builder)}">${esc(c.builder)}</span></td>
+          <td class="mono">${blankOr(c.phase)}</td>
+          <td class="mono">${blankOr(c.street_name)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCommunityHeaders() {
+      document.querySelectorAll('#community-table thead th').forEach(th => {
+        th.classList.toggle('sorted', th.dataset.key === communitySort.key);
+        const arrow = th.querySelector('.arrow');
+        if (th.dataset.key === communitySort.key) arrow.innerHTML = communitySort.dir === 'asc' ? '&#9652;' : '&#9662;';
+      });
+    }
+    document.querySelectorAll('#community-table thead th').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.key;
+        if (communitySort.key === key) communitySort.dir = communitySort.dir === 'asc' ? 'desc' : 'asc';
+        else { communitySort.key = key; communitySort.dir = 'asc'; }
+        renderCommunityHeaders();
+        renderCommunities();
+      });
+    });
+
+    function renderCommunityChips() {
+      const builders = ['all', ...new Set(COMMUNITIES.map(c => c.builder))];
+      document.getElementById('community-builder-chips').innerHTML = builders.map(b =>
+        `<button class="chip ${communityFilters.builder===b?'active':''}" data-builder="${esc(b)}">${b==='all'?'All builders':esc(b)}</button>`
+      ).join('');
+      document.querySelectorAll('#community-builder-chips .chip').forEach(c => c.addEventListener('click', () => {
+        communityFilters.builder = c.dataset.builder;
+        renderCommunityChips(); renderCommunities();
+      }));
+    }
+    document.getElementById('community-search').addEventListener('input', (e) => {
+      communityFilters.q = e.target.value;
+      renderCommunities();
+    });
+
+    /* ---------- Tabs ---------- */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+      });
+    });
+
+    /* ---------- Init ---------- */
+    document.getElementById('count-rentals').textContent = RENTALS.length;
+    document.getElementById('count-communities').textContent = COMMUNITIES.length;
+    renderStats();
+    renderChips();
+    renderRentalHeaders();
+    renderRentals();
+    renderCommunityChips();
+    renderCommunityHeaders();
+    renderCommunities();
+    </script>
+    
