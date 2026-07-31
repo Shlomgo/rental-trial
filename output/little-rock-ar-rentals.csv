@@ -1,9 +1,18 @@
 metro_area,community_name,builder,phase,street_name,full_address,purchase_price,rent_price,list_date,rent_date,days_on_market,status,source_url,last_checked_date,status_changed
-"Little Rock, AR",Midland Estates,Lennar,Phase 1,Sam Tillery Dr,"2356 Sam Tillery Dr, Alexander, AR 72002",222900,1795,2026-07-15,2026-07-31,16,previously rented,,2026-07-31,currently for rent -> previously rented (2026-07-31)
-"Little Rock, AR",Cottage Walk,Lennar,,Rambling Brook Drive,"1604 Rambling Brook Dr, Benton, AR 72015",,2000,2026-07-24,,,currently for rent,https://www.zillow.com/homedetails/1604-Rambling-Brook-Dr-Benton-AR-72015/462316832_zpid/,2026-07-31,
+"Little Rock, AR",Midland Estates,Lennar,Phase 1,Sam Tillery Dr,"2356 Sam Tillery Dr, Alexander, AR 72002",222900,1795,2026-07-15,2026-07-31,16,previously rented,"https://www.zillow.com/b/building/34.669003,-92.48261_ll/",2026-07-31,currently for rent -> previously rented (2026-07-31)
+"Little Rock, AR",Cottage Walk,Lennar,,Rambling Brook Drive,"1604 Rambling Brook Drive, Benton, AR",,2000,2026-07-24,,7,currently for rent,https://www.zillow.com/homedetails/1604-Rambling-Brook-Dr-Benton-AR-72015/462316832_zpid/ | MLS #26030160,2026-07-31,
 "Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6312 Warwick Dr, Bryant, AR 72002",,2200,2026-06-17,,,currently for rent,https://www.zillow.com/homedetails/6312-Warwick-Dr-Bryant-AR-72002/460975832_zpid/,2026-07-31,
 "Little Rock, AR",The Grove At Centennial Valley,Lennar,,Hollywood Ave,"6648 Hollywood Ave, Benton, AR 72019",,1745,2026-06-20,,,currently for rent,https://www.zillow.com/homedetails/6648-Hollywood-Ave-Benton-AR-72019/460872553_zpid/,2026-07-31,
 "Little Rock, AR",The Grove At Centennial Valley,Lennar,,Hollywood Ave,"6673 Hollywood Ave, Benton, AR 72019",,1845,2026-06-20,,,currently for rent,https://www.zillow.com/homedetails/6673-Hollywood-Ave-Benton-AR-72019/461413230_zpid/,2026-07-31,
 "Little Rock, AR",Cottage Walk,Lennar,,Raven Walk Dr,"1040 Raven Walk Dr, Benton, AR 72015",215400,1600,2026-07-07,,,currently for rent,,2026-07-31,
 "Little Rock, AR",Cottage Walk,Lennar,,Raven Walk Dr,"1028 Raven Walk Dr, Benton, AR 72015",202450,1525,2026-07-08,,,currently for rent,,2026-07-31,
 "Little Rock, AR",Cottage Walk,Lennar,,Raven Walk Dr,"1056 Raven Walk Dr, Benton, AR 72015",,1600,2026-07-27,,,currently for rent,,2026-07-31,
+"Little Rock, AR",Stagecoach Meadows,Lennar,,Maddison Rachael,"15 Maddison Rachael, Cabot, AR",,1600,2026-05-06,2026-05-13,7,previously rented,MLS #26018165,2026-07-31,
+"Little Rock, AR",Southfork Ranch,Lennar,,Powder River Drive,"109 Powder River Drive, Beebe, AR",,1800,,,22,currently for rent,MLS #26027670,2026-07-31,
+"Little Rock, AR",Stone Canyon,D.R. Horton,,Bighorn Trail,"245 Bighorn Trail, Maumelle, AR",,1850,2026-04-25,2026-05-13,18,previously rented,MLS #26016647,2026-07-31,
+"Little Rock, AR",Stone Canyon,D.R. Horton,,Bighorn Trail,"240 Bighorn Trail, Maumelle, AR",,1850,2026-04-16,2026-04-24,8,previously rented,MLS #26015179,2026-07-31,
+"Little Rock, AR",Wolfsbridge,D.R. Horton,,Wolfsbridge Loop,"61 Wolfsbridge Loop, Cabot, AR",,2000,2026-05-20,2026-06-10,21,previously rented,MLS #26020328,2026-07-31,
+"Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6328 Warwick, Bryant, AR",,2295,,,84,currently for rent,MLS #26018533,2026-07-31,
+"Little Rock, AR",The Reserve At Country Club,D.R. Horton,,Cain Trail,"503 Cain Trail, Maumelle, AR",,2300,,,4,currently for rent,MLS #26030457,2026-07-31,
+"Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6316 Warwick, Bryant, AR",,2400,,,0,currently for rent,MLS #26031291,2026-07-31,
+"Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6308 Warwick, Bryant, AR",,2400,,,39,unknown,MLS #26018537,2026-07-31,
