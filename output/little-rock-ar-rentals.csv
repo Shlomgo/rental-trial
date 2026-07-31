@@ -1,5 +1,5 @@
 metro_area,community_name,builder,phase,street_name,full_address,purchase_price,rent_price,list_date,rent_date,days_on_market,status,source_url,last_checked_date,status_changed
-"Little Rock, AR",Midland Estates,Lennar,,Sam Tillery Dr,"2356 Sam Tillery Dr, Alexander, AR",,,,,,currently for rent,"https://www.zillow.com/b/building/34.669003,-92.48261_ll/",2026-07-31,
+"Little Rock, AR",Midland Estates,Lennar,Phase 1,Sam Tillery Dr,"2356 Sam Tillery Dr, Alexander, AR 72002",222900,1795,2026-07-15,2026-07-31,16,previously rented,,2026-07-31,currently for rent -> previously rented (2026-07-31)
 "Little Rock, AR",Cottage Walk,Lennar,,Rambling Brook Drive,"1604 Rambling Brook Dr, Benton, AR 72015",,2000,2026-07-24,,,currently for rent,https://www.zillow.com/homedetails/1604-Rambling-Brook-Dr-Benton-AR-72015/462316832_zpid/,2026-07-31,
 "Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6312 Warwick Dr, Bryant, AR 72002",,2200,2026-06-17,,,currently for rent,https://www.zillow.com/homedetails/6312-Warwick-Dr-Bryant-AR-72002/460975832_zpid/,2026-07-31,
 "Little Rock, AR",The Grove At Centennial Valley,Lennar,,Hollywood Ave,"6648 Hollywood Ave, Benton, AR 72019",,1745,2026-06-20,,,currently for rent,https://www.zillow.com/homedetails/6648-Hollywood-Ave-Benton-AR-72019/460872553_zpid/,2026-07-31,
