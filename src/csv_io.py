@@ -117,13 +117,16 @@ def _merge_row(prior, new_row):
     elif prior.get("purchase_price"):
         merged["purchase_price"] = prior["purchase_price"]
 
-    old_src, new_src = prior.get("source_url", ""), new_row.get("source_url", "")
-    if old_src and new_src and old_src != new_src:
-        merged["source_url"] = f"{old_src} | {new_src}"
-    elif new_src:
-        merged["source_url"] = new_src
-    else:
-        merged["source_url"] = old_src
+    # Combine citations as a deduped set, not a blind append - otherwise
+    # re-running the same source file keeps re-appending the same
+    # citation forever.
+    old_tokens = [t.strip() for t in prior.get("source_url", "").split("|") if t.strip()]
+    new_tokens = [t.strip() for t in new_row.get("source_url", "").split("|") if t.strip()]
+    combined = list(old_tokens)
+    for token in new_tokens:
+        if token not in combined:
+            combined.append(token)
+    merged["source_url"] = " | ".join(combined)
 
     return merged, adopted_new
 
