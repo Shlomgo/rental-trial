@@ -1,9 +1,9 @@
 metro_area,community_name,builder,phase,street_name,full_address,bedrooms,sqft,purchase_price,rent_price,list_date,rent_date,days_on_market,status,source_url,last_checked_date,status_changed
 "Little Rock, AR",Midland Estates,Lennar,Phase 1,Sam Tillery Dr,"2356 Sam Tillery Dr, Alexander, AR 72002",3,1446,222900,1795,2026-07-15,2026-07-31,16,previously rented,"https://www.zillow.com/b/building/34.669003,-92.48261_ll/",2026-08-01,
-"Little Rock, AR",Cottage Walk,Lennar,,Raven Walk Dr,"1040 Raven Walk Dr, Benton, AR 72015",4,1496,215400,1600,2026-07-07,,,currently for rent,,2026-08-01,
-"Little Rock, AR",Cottage Walk,Lennar,,Raven Walk Dr,"1028 Raven Walk Dr, Benton, AR 72015",3,1248,202450,1525,2026-07-08,,,currently for rent,,2026-08-01,
-"Little Rock, AR",Cottage Walk,Lennar,,Raven Walk Dr,"1056 Raven Walk Dr, Benton, AR 72015",4,1459,,1600,2026-07-27,,,currently for rent,,2026-08-01,
-"Little Rock, AR",Cottage Walk,Lennar,,Rambling Brook Drive,"1604 Rambling Brook Drive, Benton, AR",4,1699,,2000,2026-07-25,,7,currently for rent,https://www.zillow.com/homedetails/1604-Rambling-Brook-Dr-Benton-AR-72015/462316832_zpid/ | MLS #26030160,2026-08-01,
+"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Raven Walk Dr,"1040 Raven Walk Dr, Benton, AR 72015",4,1496,215400,1600,2026-07-07,,,currently for rent,,2026-08-01,
+"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Raven Walk Dr,"1028 Raven Walk Dr, Benton, AR 72015",3,1248,202450,1525,2026-07-08,,,currently for rent,,2026-08-01,
+"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Raven Walk Dr,"1056 Raven Walk Dr, Benton, AR 72015",4,1459,,1600,2026-07-27,,,currently for rent,,2026-08-01,
+"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Rambling Brook Drive,"1604 Rambling Brook Drive, Benton, AR",4,1699,,2000,2026-07-25,,7,currently for rent,https://www.zillow.com/homedetails/1604-Rambling-Brook-Dr-Benton-AR-72015/462316832_zpid/ | MLS #26030160,2026-08-01,
 "Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6312 Warwick Dr, Bryant, AR 72002",4,1849,,2200,2026-06-18,,,currently for rent,https://www.zillow.com/homedetails/6312-Warwick-Dr-Bryant-AR-72002/460975832_zpid/,2026-08-01,
 "Little Rock, AR",The Grove At Centennial Valley,Lennar,,Hollywood Ave,"6648 Hollywood Ave, Benton, AR 72019",4,1470,,1745,2026-06-21,,,currently for rent,https://www.zillow.com/homedetails/6648-Hollywood-Ave-Benton-AR-72019/460872553_zpid/,2026-08-01,
 "Little Rock, AR",The Grove At Centennial Valley,Lennar,,Huntington Drive,"1056 Huntington Dr, Benton, AR 72019",4,1470,,1625,2026-07-03,,,currently for rent,https://www.zillow.com/homedetails/1056-Huntington-Dr-Benton-AR-72019/2061811695_zpid/,2026-08-01,
@@ -48,3 +48,4 @@ metro_area,community_name,builder,phase,street_name,full_address,bedrooms,sqft,p
 "Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr,"6308 Warwick, Bryant, AR",4,2100,,2400,,,39,unknown,MLS #26018537,2026-08-01,
 "Little Rock, AR",The Villas Hope Valley,D.R. Horton,,Kelton Lane,"101 Kelton Lane, Hensley, AR",3,1950,,2000,,,72,currently for rent,MLS #26020488,2026-08-01,
 "Little Rock, AR",White Oak Crossing,Lennar,,Cypress Knee Drive,"10413 Cypress Knee Dr, Maumelle, AR 72113",3,1480,,1800,2026-07-02,,,currently for rent,https://www.zillow.com/homedetails/10413-Cypress-Knee-Dr-Maumelle-AR-72113/2060938533_zpid/,2026-08-01,
+"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Raven Walk Dr,"1088 Raven Walk Dr, Benton, AR 72015",3,1651,224000,1650,2026-06-24,2026-07-02,8,previously rented,MLS #26011780,2026-08-01,
