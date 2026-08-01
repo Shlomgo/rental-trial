@@ -56,12 +56,21 @@ def _row_key(row, key_fields, normalize_address=False):
 
 def upsert_communities(path, new_rows):
     """new_rows: list of dicts with COMMUNITIES_COLUMNS keys.
-    Key = (metro_area, community_name, builder, phase, street_name)."""
+    Key = (metro_area, community_name, builder, phase, street_name).
+
+    A community with zero confirmed streets gets one placeholder row with
+    a blank street_name (from Step 1 discovery). The moment a real street
+    is confirmed for that community, the placeholder is redundant - drop
+    it instead of leaving a stale blank row sitting next to real streets."""
     key_fields = ["metro_area", "community_name", "builder", "phase", "street_name"]
     existing = _read_rows(path, key_fields)
     for row in new_rows:
         key = tuple(row.get(k, "") for k in key_fields)
         existing[key] = row  # add new, or overwrite identical existing row
+        if row.get("street_name"):
+            placeholder_key = (row.get("metro_area", ""), row.get("community_name", ""),
+                                row.get("builder", ""), row.get("phase", ""), "")
+            existing.pop(placeholder_key, None)
 
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=COMMUNITIES_COLUMNS)

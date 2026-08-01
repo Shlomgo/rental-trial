@@ -8,7 +8,6 @@ metro_area,community_name,builder,phase,street_name
 "Little Rock, AR",The Reserve At Country Club,D.R. Horton,,Lainey Drive
 "Little Rock, AR",River Plantation,D.R. Horton,,Plantation Dr
 "Little Rock, AR",The Vineyard,D.R. Horton,,E Sunbelt Court
-"Little Rock, AR",Crescent Grove,D.R. Horton,,
 "Little Rock, AR",Moonlight Meadows,D.R. Horton,,Moonlight Graham Road
 "Little Rock, AR",Midland Estates,Lennar,Phase 1,Sam Tillery Dr
 "Little Rock, AR",The Meadows At Parkway Trails,Lennar,,Chesapeake Trl
@@ -17,7 +16,6 @@ metro_area,community_name,builder,phase,street_name
 "Little Rock, AR",Southfork Ranch,Lennar,,Powder River Drive
 "Little Rock, AR",Southfork Ranch,Lennar,,Southfork Drive
 "Little Rock, AR",Cottage Walk,Lennar,,Rambling Brook Drive
-"Little Rock, AR",Panther Cove,Lennar,,
 "Little Rock, AR",Rosemary Fields,Lennar,,Flat Wood Ave
 "Little Rock, AR",Rosemary Fields,Lennar,,Flatwood Ave
 "Little Rock, AR",The Grove At Centennial Valley,Lennar,,Bassett St
@@ -57,3 +55,5 @@ metro_area,community_name,builder,phase,street_name
 "Little Rock, AR",Kensington Place,D.R. Horton,,Newark
 "Little Rock, AR",Cypress Bend,Lennar,,Sofia Drive
 "Little Rock, AR",The Villas Hope Valley,D.R. Horton,,Kelton Lane
+"Little Rock, AR",Crescent Grove,D.R. Horton,,Chakka Loop
+"Little Rock, AR",Panther Cove,Lennar,,Gussy Lane
