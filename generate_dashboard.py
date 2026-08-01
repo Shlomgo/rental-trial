@@ -240,7 +240,7 @@ h1 {
 
 /* ---- Rental detail table ---- */
 .table-scroll { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; min-width: 640px; }
+table { border-collapse: collapse; width: 100%; min-width: 740px; }
 thead th {
   text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--ink-faint); padding: 8px 10px; border-bottom: 1px solid var(--line-strong);
@@ -388,10 +388,18 @@ function communityMatches(entry, q) {
   return false;
 }
 
+function bedsSqftLabel(r) {
+  const parts = [];
+  if (r.bedrooms) parts.push(`${esc(r.bedrooms)}bd`);
+  if (r.sqft) parts.push(`${parseInt(r.sqft, 10).toLocaleString('en-US')}sf`);
+  return parts.length ? parts.join(' &middot; ') : '<span class="blank">—</span>';
+}
+
 function rentalRowHtml(r) {
   return `
     <tr>
       <td class="mono">${esc(r.full_address)}</td>
+      <td class="mono">${bedsSqftLabel(r)}</td>
       <td class="num mono">${blankOr(fmtMoney(r.rent_price))}</td>
       <td>
         <span class="pill ${statusClass(r.status)}">${statusLabel(r.status)}</span>
@@ -422,7 +430,7 @@ function communityHtml(entry, idx) {
   const body = total
     ? `<div class="table-scroll"><table>
         <thead><tr>
-          <th>Address</th><th class="num">Rent</th><th>Status</th>
+          <th>Address</th><th>Beds/Sqft</th><th class="num">Rent</th><th>Status</th>
           <th>Listed</th><th>Rented/removed</th><th class="num">Days</th><th>Source</th>
         </tr></thead>
         <tbody>${entry.rentals.map(rentalRowHtml).join('')}</tbody>

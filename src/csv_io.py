@@ -10,9 +10,9 @@ COMMUNITIES_COLUMNS = [
 
 RENTALS_COLUMNS = [
     "metro_area", "community_name", "builder", "phase", "street_name",
-    "full_address", "purchase_price", "rent_price", "list_date", "rent_date",
-    "days_on_market", "status", "source_url", "last_checked_date",
-    "status_changed",
+    "full_address", "bedrooms", "sqft", "purchase_price", "rent_price",
+    "list_date", "rent_date", "days_on_market", "status", "source_url",
+    "last_checked_date", "status_changed",
 ]
 
 
@@ -120,11 +120,15 @@ def _merge_row(prior, new_row):
             elif value:
                 merged[field] = value
 
-    # Sale price isn't tied to a rental episode - always fine to backfill.
-    if new_row.get("purchase_price"):
-        merged["purchase_price"] = new_row["purchase_price"]
-    elif prior.get("purchase_price"):
-        merged["purchase_price"] = prior["purchase_price"]
+    # Sale price, bedroom count, and square footage are physical facts
+    # about the property, not tied to which rental episode we're looking
+    # at - always fine to backfill, and a source that's silent on them
+    # should never blank out a value another source already gave us.
+    for field in ("purchase_price", "bedrooms", "sqft"):
+        if new_row.get(field):
+            merged[field] = new_row[field]
+        elif prior.get(field):
+            merged[field] = prior[field]
 
     # Combine citations as a deduped set, not a blind append - otherwise
     # re-running the same source file keeps re-appending the same

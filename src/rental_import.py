@@ -59,6 +59,8 @@ _DAYS_ON_ZILLOW_FIELD = "daysOnZillow"
 _DETAIL_URL_FIELD = "detailUrl"
 _SOLD_DATE_FIELD = "dateSold"
 _SOLD_PRICE_FIELD = "listingSoldPrice"
+_BEDS_FIELD = "beds"
+_SQFT_FIELD = "area"
 
 
 def _status_from_row(row):
@@ -130,6 +132,8 @@ def import_rental_export(export_csv_path, metro_config, known_streets, today=Non
                 "phase": match.get("phase", ""),
                 "street_name": match["street_name"],
                 "full_address": full_address,
+                "bedrooms": row.get(_BEDS_FIELD) or "",
+                "sqft": row.get(_SQFT_FIELD) or "",
                 "purchase_price": row.get(_SOLD_PRICE_FIELD) or "",
                 "rent_price": rent_price,
                 "list_date": list_date,

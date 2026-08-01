@@ -101,6 +101,8 @@ def _build_row(metro_config, community_name, builder, phase, street_name, addres
         "phase": phase,
         "street_name": street_name,
         "full_address": f"{address}, {city}, AR",
+        "bedrooms": (row.get("Beds") or "").strip(),
+        "sqft": (row.get("Approx SQFT") or "").strip(),
         "purchase_price": "",  # this export is rental/lease data, not sale price
         "rent_price": _parse_price(row.get("Price", "")),
         "list_date": list_date,
