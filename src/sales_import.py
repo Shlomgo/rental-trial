@@ -18,14 +18,19 @@ export - flagged to the user since a few are genuinely ambiguous):
   UCT, UCBL  -> under_contract (both have "UC" in them; UCBL's Closed Date
                               looks like an *expected* closing, not an
                               actual one)
-  ACT        -> for_sale
-  WITH       -> withdrawn   (excluded from sold/UC/for-sale and from the
-                              percent-sold denominator)
+  ACT, NEW   -> for_sale     (NEW = a freshly-entered active listing)
+  WITH       -> withdrawn   (seller pulled the listing)
+  EXP        -> expired     (listing period ran out unsold - kept distinct
+                              from withdrawn since they're different real
+                              outcomes, not the same thing)
   TBU        -> to_be_built (no Closed Date; kept separate - unclear if
                               this should count as "for sale" yet)
   PCHG       -> other       (confirmed by the user: "price change", a log
                               event rather than a listing status - not
                               counted toward sold/UC/for-sale)
+
+  withdrawn, expired, to_be_built, and other are all excluded from
+  sold/under_contract/for_sale and from the percent-sold denominator.
 """
 import csv
 import re
@@ -35,9 +40,11 @@ from src.community_match import extract_phase, find_subdivision_matches
 _STATUS_BUCKET = {
     "SLD": "sold", "SBL": "sold",
     "UCT": "under_contract", "UCBL": "under_contract",
-    "ACT": "for_sale",
+    "ACT": "for_sale", "NEW": "for_sale",
     "WITH": "withdrawn",
+    "EXP": "expired",
     "TBU": "to_be_built",
+    "PCHG": "other",  # confirmed: a price-change log event, not a status
 }
 
 BUCKETS_IN_PIPELINE = ("sold", "under_contract", "for_sale")

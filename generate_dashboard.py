@@ -449,6 +449,7 @@ function saleStatusLabel(bucket) {
   if (bucket === 'under_contract') return 'Under contract';
   if (bucket === 'for_sale') return 'For sale';
   if (bucket === 'withdrawn') return 'Withdrawn';
+  if (bucket === 'expired') return 'Expired';
   if (bucket === 'to_be_built') return 'To be built';
   return 'Other';
 }
@@ -475,6 +476,8 @@ function pipelineHtml(entry) {
   const sold = parseInt(t.sold_count, 10) || 0;
   const uc = parseInt(t.under_contract_count, 10) || 0;
   const forSale = parseInt(t.for_sale_count, 10) || 0;
+  const expired = parseInt(t.expired_count, 10) || 0;
+  const withdrawn = parseInt(t.withdrawn_count, 10) || 0;
   const planned = t.total_homes_planned ? parseInt(t.total_homes_planned, 10) : null;
   const pct = t.pct_sold ? `${t.pct_sold}%` : null;
 
@@ -482,6 +485,8 @@ function pipelineHtml(entry) {
   parts.push(`<span class="pipe-stat"><b>${sold}</b> sold${pct ? ` (${pct})` : ''}</span>`);
   if (uc) parts.push(`<span class="pipe-stat"><b>${uc}</b> under contract</span>`);
   if (forSale) parts.push(`<span class="pipe-stat"><b>${forSale}</b> for sale</span>`);
+  if (expired) parts.push(`<span class="pipe-stat pipe-planned">${expired} expired</span>`);
+  if (withdrawn) parts.push(`<span class="pipe-stat pipe-planned">${withdrawn} withdrawn</span>`);
   if (planned) parts.push(`<span class="pipe-stat pipe-planned">of <b>${planned}</b> planned</span>`);
 
   return `<div class="community-pipeline">${parts.join('<span class="pipe-sep">&middot;</span>')}</div>`;

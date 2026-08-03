@@ -17,7 +17,7 @@ SALES_RECORDS_COLUMNS = [
 TOTALS_COLUMNS = [
     "metro_area", "community_name", "builder", "phase", "total_homes_planned",
     "sold_count", "under_contract_count", "for_sale_count",
-    "withdrawn_count", "to_be_built_count", "other_count",
+    "withdrawn_count", "expired_count", "to_be_built_count", "other_count",
     "pct_sold", "last_updated",
 ]
 
@@ -138,6 +138,7 @@ def recompute_totals(ledger_path, totals_path, metro_area, today_str):
             "under_contract_count": str(c.get("under_contract", 0)),
             "for_sale_count": str(c.get("for_sale", 0)),
             "withdrawn_count": str(c.get("withdrawn", 0)),
+            "expired_count": str(c.get("expired", 0)),
             "to_be_built_count": str(c.get("to_be_built", 0)),
             "other_count": str(c.get("other", 0)),
             "pct_sold": pct_sold,
