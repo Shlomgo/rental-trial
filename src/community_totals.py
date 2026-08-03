@@ -40,7 +40,10 @@ def _write_rows(path, rows, columns):
 def _normalize_address(full_address):
     import re
     s = full_address.lower()
-    s = re.sub(r"\b\d{5}\b", "", s)
+    # Anchored to end-of-string - a leading house number can be 5 digits
+    # too (e.g. "10805 Mason Drive"), and stripping any 5-digit run would
+    # wrongly collide two different addresses on the same street.
+    s = re.sub(r"\b\d{5}\b\s*$", "", s)
     for pattern, repl in [
         (r"\bdrive\b", "dr"), (r"\blane\b", "ln"), (r"\bcourt\b", "ct"),
         (r"\bcircle\b", "cir"), (r"\bstreet\b", "st"), (r"\bavenue\b", "ave"),

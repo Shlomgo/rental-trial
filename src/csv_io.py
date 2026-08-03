@@ -29,7 +29,11 @@ def _normalize_address(full_address):
     the key drops the zip, lowercases, normalizes street suffixes, and
     collapses whitespace/punctuation."""
     s = full_address.lower()
-    s = re.sub(r"\b\d{5}\b", "", s)  # drop zip if present
+    # Drop a trailing zip if present - anchored to end-of-string, since a
+    # leading house number can just as easily be 5 digits (e.g. "10805
+    # Mason Drive") and stripping *any* 5-digit run would wrongly collide
+    # two different addresses on the same street into one dedup key.
+    s = re.sub(r"\b\d{5}\b\s*$", "", s)
     for pattern, repl in _STREET_SUFFIX_SUBS:
         s = re.sub(pattern, repl, s)
     s = re.sub(r"[^a-z0-9]+", " ", s)
@@ -162,7 +166,7 @@ def _merge_row(prior, new_row):
     # let adopting a newer episode silently regress it to a less complete
     # string (e.g. losing a zip code some other source had included).
     old_addr, new_addr = prior.get("full_address", ""), new_row.get("full_address", "")
-    has_zip = lambda a: bool(re.search(r"\b\d{5}\b", a))
+    has_zip = lambda a: bool(re.search(r"\b\d{5}\b\s*$", a))
     if old_addr and (not new_addr or (has_zip(old_addr) and not has_zip(new_addr))):
         merged["full_address"] = old_addr
     elif new_addr:
