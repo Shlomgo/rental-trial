@@ -506,15 +506,15 @@ function communityHtml(entry, idx) {
     : '';
 
   const body = `
+    <div class="body-section">
+      <div class="body-section-label">Rentals</div>
+      ${rentalsBody}
+    </div>
     ${entry.sales.length ? `
     <div class="body-section">
       <div class="body-section-label">For-sale activity (${entry.sales.length})</div>
       ${salesBody}
-    </div>` : ''}
-    <div class="body-section">
-      <div class="body-section-label">Rentals</div>
-      ${rentalsBody}
-    </div>`;
+    </div>` : ''}`;
 
   return `
     <div class="community" data-idx="${idx}">
@@ -523,12 +523,12 @@ function communityHtml(entry, idx) {
         <div class="community-name-block">
           <div class="community-name">${esc(entry.name)}${entry.city ? `<span class="community-city">${esc(entry.city)}</span>` : ''}${[...entry.phases].sort().map(p => `<span class="phase-tag">${esc(p)}</span>`).join('')}</div>
           <div class="community-streets">${esc(streetsLine)}</div>
-          ${pipelineHtml(entry)}
+          <div class="rental-summary">
+            <div class="mini-pills">${pills}</div>
+            <div class="rental-total ${total ? '' : 'zero'}">${total}</div>
+          </div>
         </div>
-        <div class="rental-summary">
-          <div class="mini-pills">${pills}</div>
-          <div class="rental-total ${total ? '' : 'zero'}">${total}</div>
-        </div>
+        ${pipelineHtml(entry)}
       </div>
       <div class="community-body">${body}</div>
     </div>`;
