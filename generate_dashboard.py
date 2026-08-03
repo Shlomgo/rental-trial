@@ -365,41 +365,39 @@ function sourceCell(src) {
   }).join(' ');
 }
 
-/* ---- Group communities by builder, then by community name+phase ---- */
+/* ---- Group communities by builder, then by community name only ----
+   A single community can have streets from different phases (phase gets
+   detected per-street from whatever subdivision text that street's
+   source used, e.g. "PHASE 1" vs "PHASE 2" vs no phase at all) - phase
+   is a per-street fact, not something that should split one community
+   into multiple dashboard entries. Every phase seen is collected and
+   shown together instead. */
 function buildModel() {
   const byBuilder = {};
   for (const b of BUILDER_ORDER) byBuilder[b] = new Map();
 
+  const findOrCreateEntry = (builderMap, communityName, builder) => {
+    if (!builderMap.has(communityName)) {
+      builderMap.set(communityName, { name: communityName, builder, phases: new Set(), streets: [], rentals: [], sales: [] });
+    }
+    return builderMap.get(communityName);
+  };
+
   for (const c of COMMUNITIES) {
     const builderMap = byBuilder[c.builder] || (byBuilder[c.builder] = new Map());
-    const key = c.community_name + '|' + (c.phase || '');
-    if (!builderMap.has(key)) {
-      builderMap.set(key, { name: c.community_name, builder: c.builder, phase: c.phase || '', streets: [], rentals: [], sales: [] });
-    }
-    if (c.street_name) builderMap.get(key).streets.push(c.street_name);
+    const entry = findOrCreateEntry(builderMap, c.community_name, c.builder);
+    if (c.phase) entry.phases.add(c.phase);
+    if (c.street_name) entry.streets.push(c.street_name);
   }
-  const findOrCreateEntry = (builderMap, rowCommunityName, rowBuilder, rowPhase) => {
-    let key = rowCommunityName + '|' + (rowPhase || '');
-    if (!builderMap.has(key)) {
-      key = [...builderMap.keys()].find(k => k.startsWith(rowCommunityName + '|')) || key;
-    }
-    if (!builderMap.has(key)) {
-      builderMap.set(key, { name: rowCommunityName, builder: rowBuilder, phase: rowPhase || '', streets: [], rentals: [], sales: [] });
-    }
-    return builderMap.get(key);
-  };
   for (const r of RENTALS) {
     const builderMap = byBuilder[r.builder];
     if (!builderMap) continue;
-    // A rental's phase may differ in formatting from the community row's
-    // phase in rare cases - fall back to matching by name only if the
-    // exact name+phase key isn't found.
-    findOrCreateEntry(builderMap, r.community_name, r.builder, r.phase).rentals.push(r);
+    findOrCreateEntry(builderMap, r.community_name, r.builder).rentals.push(r);
   }
   for (const s of SALES) {
     const builderMap = byBuilder[s.builder];
     if (!builderMap) continue;
-    findOrCreateEntry(builderMap, s.community_name, s.builder, s.phase).sales.push(s);
+    findOrCreateEntry(builderMap, s.community_name, s.builder).sales.push(s);
   }
   return byBuilder;
 }
@@ -543,7 +541,7 @@ function communityHtml(entry, idx) {
       <div class="community-head">
         <span class="chevron"></span>
         <div class="community-name-block">
-          <div class="community-name">${esc(entry.name)}${entry.phase ? `<span class="phase-tag">${esc(entry.phase)}</span>` : ''}</div>
+          <div class="community-name">${esc(entry.name)}${[...entry.phases].sort().map(p => `<span class="phase-tag">${esc(p)}</span>`).join('')}</div>
           <div class="community-streets">${esc(streetsLine)}</div>
           ${pipelineHtml(entry)}
         </div>
