@@ -530,15 +530,15 @@ function communityHtml(entry, idx) {
     : '';
 
   const body = `
-    <div class="body-section">
-      <div class="body-section-label">Rentals</div>
-      ${rentalsBody}
-    </div>
     ${entry.sales.length ? `
     <div class="body-section">
       <div class="body-section-label">For-sale activity (${entry.sales.length})</div>
       ${salesBody}
-    </div>` : ''}`;
+    </div>` : ''}
+    <div class="body-section">
+      <div class="body-section-label">Rentals</div>
+      ${rentalsBody}
+    </div>`;
 
   return `
     <div class="community" data-idx="${idx}">
