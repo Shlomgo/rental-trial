@@ -213,6 +213,14 @@ h1 {
   font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
   border: 1px solid var(--line-strong); border-radius: 3px; padding: 1px 6px;
 }
+.community-pipeline {
+  margin-top: 5px; font-size: 12px; color: var(--ink-soft);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px;
+}
+.pipe-stat b { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pipe-planned { color: var(--ink-faint); }
+.pipe-planned b { color: var(--ink-faint); }
+.pipe-sep { color: var(--ink-faint); }
 .rental-summary {
   flex: none; display: flex; align-items: center; gap: 10px;
 }
@@ -307,8 +315,11 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 <script>
 const COMMUNITIES = __COMMUNITIES_JSON__;
 const RENTALS = __RENTALS_JSON__;
+const TOTALS = __TOTALS_JSON__;
 const GENERATED = __GENERATED_DATE__;
 const BUILDER_ORDER = ["D.R. Horton", "Lennar"];
+
+const TOTALS_BY_KEY = new Map(TOTALS.map(t => [t.community_name + '|' + t.builder, t]));
 
 document.getElementById('generated-date').textContent = GENERATED;
 
@@ -357,7 +368,7 @@ function buildModel() {
     const builderMap = byBuilder[c.builder] || (byBuilder[c.builder] = new Map());
     const key = c.community_name + '|' + (c.phase || '');
     if (!builderMap.has(key)) {
-      builderMap.set(key, { name: c.community_name, phase: c.phase || '', streets: [], rentals: [] });
+      builderMap.set(key, { name: c.community_name, builder: c.builder, phase: c.phase || '', streets: [], rentals: [] });
     }
     if (c.street_name) builderMap.get(key).streets.push(c.street_name);
   }
@@ -372,7 +383,7 @@ function buildModel() {
       key = [...builderMap.keys()].find(k => k.startsWith(r.community_name + '|')) || key;
     }
     if (!builderMap.has(key)) {
-      builderMap.set(key, { name: r.community_name, phase: r.phase || '', streets: [], rentals: [] });
+      builderMap.set(key, { name: r.community_name, builder: r.builder, phase: r.phase || '', streets: [], rentals: [] });
     }
     builderMap.get(key).rentals.push(r);
   }
@@ -412,6 +423,25 @@ function rentalRowHtml(r) {
     </tr>`;
 }
 
+function pipelineHtml(entry) {
+  const t = TOTALS_BY_KEY.get(entry.name + '|' + entry.builder);
+  if (!t) return '';
+
+  const sold = parseInt(t.sold_count, 10) || 0;
+  const uc = parseInt(t.under_contract_count, 10) || 0;
+  const forSale = parseInt(t.for_sale_count, 10) || 0;
+  const planned = t.total_homes_planned ? parseInt(t.total_homes_planned, 10) : null;
+  const pct = t.pct_sold ? `${t.pct_sold}%` : null;
+
+  const parts = [];
+  parts.push(`<span class="pipe-stat"><b>${sold}</b> sold${pct ? ` (${pct})` : ''}</span>`);
+  if (uc) parts.push(`<span class="pipe-stat"><b>${uc}</b> under contract</span>`);
+  if (forSale) parts.push(`<span class="pipe-stat"><b>${forSale}</b> for sale</span>`);
+  if (planned) parts.push(`<span class="pipe-stat pipe-planned">of <b>${planned}</b> planned</span>`);
+
+  return `<div class="community-pipeline">${parts.join('<span class="pipe-sep">&middot;</span>')}</div>`;
+}
+
 function communityHtml(entry, idx) {
   const total = entry.rentals.length;
   const counts = { active: 0, past: 0, unknown: 0 };
@@ -444,6 +474,7 @@ function communityHtml(entry, idx) {
         <div class="community-name-block">
           <div class="community-name">${esc(entry.name)}${entry.phase ? `<span class="phase-tag">${esc(entry.phase)}</span>` : ''}</div>
           <div class="community-streets">${esc(streetsLine)}</div>
+          ${pipelineHtml(entry)}
         </div>
         <div class="rental-summary">
           <div class="mini-pills">${pills}</div>
@@ -508,18 +539,22 @@ def generate(metro_slug, output_dir="output"):
     metro_config = get_metro(metro_slug)
     communities_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-communities.csv")
     rentals_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-rentals.csv")
+    totals_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-community-totals.csv")
     if not os.path.exists(communities_path) or not os.path.exists(rentals_path):
         raise SystemExit(f"Run run_discovery.py / import scripts for {metro_slug} first.")
 
     communities = read_csv(communities_path)
     rentals = read_csv(rentals_path)
+    totals = read_csv(totals_path) if os.path.exists(totals_path) else []
     generated = datetime.date.today().isoformat()
 
     communities_json = json.dumps(communities, ensure_ascii=False).replace("</script", "<\\/script")
     rentals_json = json.dumps(rentals, ensure_ascii=False).replace("</script", "<\\/script")
+    totals_json = json.dumps(totals, ensure_ascii=False).replace("</script", "<\\/script")
 
     out = TEMPLATE.replace("__COMMUNITIES_JSON__", communities_json)
     out = out.replace("__RENTALS_JSON__", rentals_json)
+    out = out.replace("__TOTALS_JSON__", totals_json)
     out = out.replace("__GENERATED_DATE__", json.dumps(generated))
 
     dashboard_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-dashboard.html")

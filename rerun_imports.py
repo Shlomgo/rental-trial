@@ -15,8 +15,10 @@ import os
 from config.metros import get_metro
 from src import csv_io
 from src.community_match import load_known_communities
+from src.community_totals import recompute_totals, upsert_sales_records
 from src.mls_import import import_mls_export
 from src.rental_import import import_rental_export, load_known_streets
+from src.sales_import import import_sales_export
 from src.sources_registry import load_manifest, source_path
 
 
@@ -29,6 +31,8 @@ def main():
     metro_config = get_metro(args.metro_slug)
     communities_path = os.path.join(args.output_dir, f"{metro_config.METRO_SLUG}-communities.csv")
     rentals_path = os.path.join(args.output_dir, f"{metro_config.METRO_SLUG}-rentals.csv")
+    ledger_path = os.path.join(args.output_dir, f"{metro_config.METRO_SLUG}-sales-records.csv")
+    totals_path = os.path.join(args.output_dir, f"{metro_config.METRO_SLUG}-community-totals.csv")
     if not os.path.exists(communities_path):
         raise SystemExit(f"{communities_path} not found - run run_discovery.py first.")
 
@@ -43,6 +47,7 @@ def main():
     today_str = today.isoformat()
     total_matched = 0
     total_new_streets = 0
+    any_sales_source = False
 
     for entry in manifest:
         path = source_path(args.metro_slug, entry["filename"])
@@ -58,22 +63,33 @@ def main():
 
         if entry["source_type"] == "apify":
             matched_rows, unmatched = import_rental_export(path, metro_config, known_streets, today=today)
-            new_streets = []
-            ambiguous = 0
-        else:  # mls
+            new_streets, ambiguous = [], 0
+            csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
+        elif entry["source_type"] == "mls":
             matched_rows, new_streets, unmatched, ambiguous = import_mls_export(
                 path, metro_config, known_streets, known_communities
             )
             if new_streets:
                 csv_io.upsert_communities(communities_path, new_streets)
-
-        csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
+            csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
+        else:  # sales
+            any_sales_source = True
+            matched_rows, new_streets, unmatched, ambiguous, unrecognized = import_sales_export(
+                path, metro_config, known_streets, known_communities
+            )
+            if new_streets:
+                csv_io.upsert_communities(communities_path, new_streets)
+            upsert_sales_records(ledger_path, matched_rows, today_str)
 
         total_matched += len(matched_rows)
         total_new_streets += len(new_streets)
         print(f"  {entry['filename']} ({entry['source_type']}): {len(matched_rows)} matched, "
               f"{len(new_streets)} new street(s), {unmatched} unmatched"
               + (f", {ambiguous} ambiguous" if ambiguous else ""))
+
+    if any_sales_source:
+        recompute_totals(ledger_path, totals_path, metro_config.METRO_AREA, today_str)
+        print(f"Updated {totals_path}.")
 
     print(f"\nDone. {total_matched} total matches across {len(manifest)} source file(s), "
           f"{total_new_streets} new street(s) added to {communities_path}.")

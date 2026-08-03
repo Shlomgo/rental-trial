@@ -9,7 +9,9 @@ import csv
 import os
 
 MANIFEST_COLUMNS = ["filename", "source_type", "label", "added_date"]
-VALID_SOURCE_TYPES = {"apify", "mls"}
+# apify/mls feed rentals.csv (rental activity); sales feeds
+# community-totals.csv (the new-construction sales pipeline)
+VALID_SOURCE_TYPES = {"apify", "mls", "sales"}
 
 
 def _sources_dir(metro_slug):
