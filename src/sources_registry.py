@@ -9,9 +9,12 @@ import csv
 import os
 
 MANIFEST_COLUMNS = ["filename", "source_type", "label", "added_date"]
-# apify/mls feed rentals.csv (rental activity); sales feeds
-# community-totals.csv (the new-construction sales pipeline)
-VALID_SOURCE_TYPES = {"apify", "mls", "sales"}
+# apify/mls/manual feed rentals.csv (rental activity); sales feeds
+# community-totals.csv (the new-construction sales pipeline). "manual" is
+# for listings entered by hand (e.g. pasted directly in chat, no export
+# file to keep) - stored pre-matched in RENTALS_COLUMNS shape, so a
+# rebuild-from-sources never silently drops them again.
+VALID_SOURCE_TYPES = {"apify", "mls", "sales", "manual"}
 
 
 def _sources_dir(metro_slug):

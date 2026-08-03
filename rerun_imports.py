@@ -9,6 +9,7 @@ Usage:
     python3 rerun_imports.py little-rock-ar
 """
 import argparse
+import csv
 import datetime
 import os
 
@@ -72,6 +73,13 @@ def main():
             if new_streets:
                 csv_io.upsert_communities(communities_path, new_streets)
             csv_io.backfill_city(communities_path, city_by_community)
+            csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
+        elif entry["source_type"] == "manual":
+            # Already fully resolved (community/street/status decided by
+            # hand when it was added) - just re-upsert as-is, no matching.
+            with open(path, newline="", encoding="utf-8") as f:
+                matched_rows = list(csv.DictReader(f))
+            new_streets, unmatched, ambiguous = [], 0, 0
             csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
         else:  # sales
             any_sales_source = True
