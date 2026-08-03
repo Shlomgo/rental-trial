@@ -130,6 +130,16 @@ def _merge_row(prior, new_row):
         elif prior.get(field):
             merged[field] = prior[field]
 
+    # full_address is the row's identity, not an episode field - don't
+    # let adopting a newer episode silently regress it to a less complete
+    # string (e.g. losing a zip code some other source had included).
+    old_addr, new_addr = prior.get("full_address", ""), new_row.get("full_address", "")
+    has_zip = lambda a: bool(re.search(r"\b\d{5}\b", a))
+    if old_addr and (not new_addr or (has_zip(old_addr) and not has_zip(new_addr))):
+        merged["full_address"] = old_addr
+    elif new_addr:
+        merged["full_address"] = new_addr
+
     # Combine citations as a deduped set, not a blind append - otherwise
     # re-running the same source file keeps re-appending the same
     # citation forever.

@@ -245,6 +245,11 @@ h1 {
 }
 .community.expanded .community-body { display: block; }
 .no-rentals { color: var(--ink-faint); font-size: 13px; padding: 4px 0 2px; }
+.body-section + .body-section { margin-top: 18px; }
+.body-section-label {
+  font-family: var(--mono); font-size: 10.5px; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 6px;
+}
 
 /* ---- Rental detail table ---- */
 .table-scroll { overflow-x: auto; }
@@ -316,6 +321,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 const COMMUNITIES = __COMMUNITIES_JSON__;
 const RENTALS = __RENTALS_JSON__;
 const TOTALS = __TOTALS_JSON__;
+const SALES = __SALES_JSON__;
 const GENERATED = __GENERATED_DATE__;
 const BUILDER_ORDER = ["D.R. Horton", "Lennar"];
 
@@ -368,24 +374,32 @@ function buildModel() {
     const builderMap = byBuilder[c.builder] || (byBuilder[c.builder] = new Map());
     const key = c.community_name + '|' + (c.phase || '');
     if (!builderMap.has(key)) {
-      builderMap.set(key, { name: c.community_name, builder: c.builder, phase: c.phase || '', streets: [], rentals: [] });
+      builderMap.set(key, { name: c.community_name, builder: c.builder, phase: c.phase || '', streets: [], rentals: [], sales: [] });
     }
     if (c.street_name) builderMap.get(key).streets.push(c.street_name);
   }
+  const findOrCreateEntry = (builderMap, rowCommunityName, rowBuilder, rowPhase) => {
+    let key = rowCommunityName + '|' + (rowPhase || '');
+    if (!builderMap.has(key)) {
+      key = [...builderMap.keys()].find(k => k.startsWith(rowCommunityName + '|')) || key;
+    }
+    if (!builderMap.has(key)) {
+      builderMap.set(key, { name: rowCommunityName, builder: rowBuilder, phase: rowPhase || '', streets: [], rentals: [], sales: [] });
+    }
+    return builderMap.get(key);
+  };
   for (const r of RENTALS) {
     const builderMap = byBuilder[r.builder];
     if (!builderMap) continue;
     // A rental's phase may differ in formatting from the community row's
     // phase in rare cases - fall back to matching by name only if the
     // exact name+phase key isn't found.
-    let key = r.community_name + '|' + (r.phase || '');
-    if (!builderMap.has(key)) {
-      key = [...builderMap.keys()].find(k => k.startsWith(r.community_name + '|')) || key;
-    }
-    if (!builderMap.has(key)) {
-      builderMap.set(key, { name: r.community_name, builder: r.builder, phase: r.phase || '', streets: [], rentals: [] });
-    }
-    builderMap.get(key).rentals.push(r);
+    findOrCreateEntry(builderMap, r.community_name, r.builder, r.phase).rentals.push(r);
+  }
+  for (const s of SALES) {
+    const builderMap = byBuilder[s.builder];
+    if (!builderMap) continue;
+    findOrCreateEntry(builderMap, s.community_name, s.builder, s.phase).sales.push(s);
   }
   return byBuilder;
 }
@@ -396,6 +410,7 @@ function communityMatches(entry, q) {
   if (entry.name.toLowerCase().includes(q)) return true;
   if (entry.streets.some(s => s.toLowerCase().includes(q))) return true;
   if (entry.rentals.some(r => r.full_address.toLowerCase().includes(q))) return true;
+  if (entry.sales.some(s => s.full_address.toLowerCase().includes(q))) return true;
   return false;
 }
 
@@ -420,6 +435,36 @@ function rentalRowHtml(r) {
       <td class="mono">${blankOr(r.rent_date)}</td>
       <td class="num mono">${blankOr(r.days_on_market)}</td>
       <td>${sourceCell(r.source_url)}</td>
+    </tr>`;
+}
+
+function saleStatusClass(bucket) {
+  if (bucket === 'sold') return 'past';
+  if (bucket === 'under_contract') return 'unknown';
+  if (bucket === 'for_sale') return 'active';
+  return 'unknown';
+}
+function saleStatusLabel(bucket) {
+  if (bucket === 'sold') return 'Sold';
+  if (bucket === 'under_contract') return 'Under contract';
+  if (bucket === 'for_sale') return 'For sale';
+  if (bucket === 'withdrawn') return 'Withdrawn';
+  if (bucket === 'to_be_built') return 'To be built';
+  return 'Other';
+}
+function saleRowHtml(s) {
+  return `
+    <tr>
+      <td class="mono">${esc(s.full_address)}</td>
+      <td class="mono">${bedsSqftLabel(s)}</td>
+      <td class="num mono">${blankOr(fmtMoney(s.list_price))}</td>
+      <td class="num mono">${blankOr(fmtMoney(s.price))}</td>
+      <td>
+        <span class="pill ${saleStatusClass(s.status_bucket)}">${saleStatusLabel(s.status_bucket)}</span>
+        ${s.status_changed ? `<div class="mono" style="font-size:10px;color:var(--ink-faint);margin-top:4px">${esc(s.status_changed)}</div>` : ''}
+      </td>
+      <td class="mono">${blankOr(s.input_date)}</td>
+      <td class="mono">${blankOr(s.closed_date)}</td>
     </tr>`;
 }
 
@@ -457,7 +502,7 @@ function communityHtml(entry, idx) {
     ? entry.streets.join(', ')
     : 'No confirmed streets yet';
 
-  const body = total
+  const rentalsBody = total
     ? `<div class="table-scroll"><table>
         <thead><tr>
           <th>Address</th><th>Beds/Sqft</th><th class="num">Rent</th><th>Status</th>
@@ -466,6 +511,27 @@ function communityHtml(entry, idx) {
         <tbody>${entry.rentals.map(rentalRowHtml).join('')}</tbody>
       </table></div>`
     : `<div class="no-rentals">No rental activity recorded yet.</div>`;
+
+  const salesBody = entry.sales.length
+    ? `<div class="table-scroll"><table>
+        <thead><tr>
+          <th>Address</th><th>Beds/Sqft</th><th class="num">List price</th><th class="num">Price</th>
+          <th>Status</th><th>Input date</th><th>Closed date</th>
+        </tr></thead>
+        <tbody>${[...entry.sales].sort((a, b) => (b.input_date || '').localeCompare(a.input_date || '')).map(saleRowHtml).join('')}</tbody>
+      </table></div>`
+    : '';
+
+  const body = `
+    <div class="body-section">
+      <div class="body-section-label">Rentals</div>
+      ${rentalsBody}
+    </div>
+    ${entry.sales.length ? `
+    <div class="body-section">
+      <div class="body-section-label">For-sale activity (${entry.sales.length})</div>
+      ${salesBody}
+    </div>` : ''}`;
 
   return `
     <div class="community" data-idx="${idx}">
@@ -540,21 +606,25 @@ def generate(metro_slug, output_dir="output"):
     communities_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-communities.csv")
     rentals_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-rentals.csv")
     totals_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-community-totals.csv")
+    sales_ledger_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-sales-records.csv")
     if not os.path.exists(communities_path) or not os.path.exists(rentals_path):
         raise SystemExit(f"Run run_discovery.py / import scripts for {metro_slug} first.")
 
     communities = read_csv(communities_path)
     rentals = read_csv(rentals_path)
     totals = read_csv(totals_path) if os.path.exists(totals_path) else []
+    sales_records = read_csv(sales_ledger_path) if os.path.exists(sales_ledger_path) else []
     generated = datetime.date.today().isoformat()
 
     communities_json = json.dumps(communities, ensure_ascii=False).replace("</script", "<\\/script")
     rentals_json = json.dumps(rentals, ensure_ascii=False).replace("</script", "<\\/script")
     totals_json = json.dumps(totals, ensure_ascii=False).replace("</script", "<\\/script")
+    sales_json = json.dumps(sales_records, ensure_ascii=False).replace("</script", "<\\/script")
 
     out = TEMPLATE.replace("__COMMUNITIES_JSON__", communities_json)
     out = out.replace("__RENTALS_JSON__", rentals_json)
     out = out.replace("__TOTALS_JSON__", totals_json)
+    out = out.replace("__SALES_JSON__", sales_json)
     out = out.replace("__GENERATED_DATE__", json.dumps(generated))
 
     dashboard_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-dashboard.html")

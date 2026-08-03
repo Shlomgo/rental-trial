@@ -23,8 +23,9 @@ export - flagged to the user since a few are genuinely ambiguous):
                               percent-sold denominator)
   TBU        -> to_be_built (no Closed Date; kept separate - unclear if
                               this should count as "for sale" yet)
-  PCHG       -> other       (only ever seen once; looks like a stray
-                              price-change log row, not a real status)
+  PCHG       -> other       (confirmed by the user: "price change", a log
+                              event rather than a listing status - not
+                              counted toward sold/UC/for-sale)
 """
 import csv
 import re
@@ -76,6 +77,20 @@ def _match_street(street_guess, known_streets):
 
 def _parse_price(price_str):
     return re.sub(r"[^\d.]", "", price_str or "")
+
+
+def _parse_date(date_str):
+    """'3/19/2025 1:14 PM' / '3/19/2025' -> '2025-03-19' (ISO, so later
+    string comparisons sort chronologically instead of lexicographically -
+    raw M/D/YYYY text sorts "10/1/2025" before "9/1/2025", which is wrong)."""
+    if not date_str:
+        return ""
+    date_part = date_str.strip().split(" ")[0]
+    try:
+        month, day, year = date_part.split("/")
+        return f"{int(year):04d}-{int(month):02d}-{int(day):02d}"
+    except (ValueError, IndexError):
+        return ""
 
 
 def import_sales_export(export_csv_path, metro_config, known_streets, known_communities):
@@ -156,8 +171,8 @@ def import_sales_export(export_csv_path, metro_config, known_streets, known_comm
                 "price": _parse_price(row.get("Price", "")),
                 "status_bucket": status_bucket,
                 "status_raw": status_raw,
-                "input_date": (row.get("Input Date") or "").strip(),
-                "closed_date": (row.get("Closed Date") or "").strip(),
+                "input_date": _parse_date(row.get("Input Date", "")),
+                "closed_date": _parse_date(row.get("Closed Date", "")),
             })
 
     new_streets = [
