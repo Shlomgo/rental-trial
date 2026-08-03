@@ -567,7 +567,17 @@ function render() {
   for (const builder of BUILDER_ORDER) {
     const entries = [...(model[builder] || new Map()).values()]
       .filter(e => communityMatches(e, q))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => {
+        const ta = TOTALS_BY_KEY.get(a.name + '|' + a.builder);
+        const tb = TOTALS_BY_KEY.get(b.name + '|' + b.builder);
+        const forSaleA = ta ? (parseInt(ta.for_sale_count, 10) || 0) : 0;
+        const forSaleB = tb ? (parseInt(tb.for_sale_count, 10) || 0) : 0;
+        if (forSaleB !== forSaleA) return forSaleB - forSaleA;
+        const ucA = ta ? (parseInt(ta.under_contract_count, 10) || 0) : 0;
+        const ucB = tb ? (parseInt(tb.under_contract_count, 10) || 0) : 0;
+        if (ucB !== ucA) return ucB - ucA;
+        return a.name.localeCompare(b.name);
+      });
     if (!entries.length) continue;
     anyResults = true;
     const totalRentals = entries.reduce((s, e) => s + e.rentals.length, 0);
