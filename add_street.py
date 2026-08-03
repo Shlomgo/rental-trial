@@ -4,11 +4,13 @@ Add a street to a known community's entry in communities.csv.
 
 Usage:
     python3 add_street.py little-rock-ar "Cottage Walk" "Example Lane"
-    python3 add_street.py little-rock-ar "Cottage Walk" "Example Lane" --builder Lennar --phase "Phase 2"
+    python3 add_street.py little-rock-ar "Cottage Walk" "Example Lane" --builder Lennar --phase "Phase 2" --city Benton
 
-If the community already exists, --builder/--phase are inferred from its
-existing rows and don't need to be passed. If it doesn't exist yet, both
-are required (a community's builder can't be guessed).
+If the community already exists, --builder/--phase/--city are inferred from
+its existing rows and don't need to be passed. If it doesn't exist yet,
+--builder is required (a community's builder can't be guessed); --city is
+optional but recommended since nothing else can infer it for a brand-new
+community.
 """
 import argparse
 import csv
@@ -25,6 +27,7 @@ def main():
     parser.add_argument("street_name")
     parser.add_argument("--builder", help="Required if the community is new")
     parser.add_argument("--phase", default="", help="Optional phase name/number")
+    parser.add_argument("--city", default="", help="City/town the community is in")
     parser.add_argument("--output-dir", default="output")
     args = parser.parse_args()
 
@@ -41,6 +44,7 @@ def main():
     if existing_for_community:
         builder = args.builder or existing_for_community[0]["builder"]
         phase = args.phase or existing_for_community[0]["phase"]
+        city = args.city or next((r.get("city", "") for r in existing_for_community if r.get("city")), "")
         community_name = existing_for_community[0]["community_name"]  # canonical casing
     else:
         if not args.builder:
@@ -51,6 +55,7 @@ def main():
             )
         builder = args.builder
         phase = args.phase
+        city = args.city
         community_name = args.community_name
 
     already_there = any(
@@ -65,6 +70,7 @@ def main():
     csv_io.upsert_communities(communities_path, [{
         "metro_area": metro_config.METRO_AREA,
         "community_name": community_name,
+        "city": city,
         "builder": builder,
         "phase": phase,
         "street_name": args.street_name,

@@ -1,89 +1,95 @@
-metro_area,community_name,builder,phase,street_name
-"Little Rock, AR",Kensington Place,D.R. Horton,,Warwick Dr
-"Little Rock, AR",Wolfsbridge,D.R. Horton,,Wolfsbridge Loop
-"Little Rock, AR",The Villas Hope Valley,D.R. Horton,,Preston Ln
-"Little Rock, AR",Stone Canyon,D.R. Horton,,Bighorn Trail
-"Little Rock, AR",Stone Canyon,D.R. Horton,,Stone Canyon Drive
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,,Cain Trail
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,,Lainey Drive
-"Little Rock, AR",River Plantation,D.R. Horton,,Plantation Dr
-"Little Rock, AR",The Vineyard,D.R. Horton,,E Sunbelt Court
-"Little Rock, AR",Moonlight Meadows,D.R. Horton,,Moonlight Graham Road
-"Little Rock, AR",Midland Estates,Lennar,Phase 1,Sam Tillery Dr
-"Little Rock, AR",The Meadows At Parkway Trails,Lennar,,Chesapeake Trl
-"Little Rock, AR",The Meadows At Parkway Trails,Lennar,,Potomac Trl
-"Little Rock, AR",Farmhouse At Ridge Creek,Lennar,,
-"Little Rock, AR",Southfork Ranch,Lennar,,Powder River Drive
-"Little Rock, AR",Southfork Ranch,Lennar,,Southfork Drive
-"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Rambling Brook Drive
-"Little Rock, AR",Rosemary Fields,Lennar,,Flat Wood Ave
-"Little Rock, AR",Rosemary Fields,Lennar,,Flatwood Ave
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Bassett St
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Croft Ave
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Hollywood Ave
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Maddison Rachael
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Nona Ruth Lane
-"Little Rock, AR",Gold Creek Falls,Lennar,,
-"Little Rock, AR",Nolan Place,Lennar,,
-"Little Rock, AR",Springlake Trails,Lennar,,Duck Creek Drive
-"Little Rock, AR",Springlake Trails,Lennar,,Thompson Branch Trl
-"Little Rock, AR",Cypress Bend,Lennar,,Jonathan Drive
-"Little Rock, AR",Cypress Bend,Lennar,,Lucy Lane
-"Little Rock, AR",The Vineyard,Lennar,,Cabernet Way
-"Little Rock, AR",The Vineyard,Lennar,,E Concord Road
-"Little Rock, AR",Woods At White Oak,Lennar,,
-"Little Rock, AR",Magnolia Manor,Lennar,,Magnolia Springs Drive
-"Little Rock, AR",Magnolia Manor,Lennar,,Manor Court
-"Little Rock, AR",Magnolia Manor,Lennar,,Manor Oaks Blvd
-"Little Rock, AR",Cottage Walk,Lennar,Phase 1,Raven Walk Dr
-"Little Rock, AR",Deerfield,Lennar,,Ten Point Lane
-"Little Rock, AR",White Oak Crossing,Lennar,,W Westwood Creek Drive
-"Little Rock, AR",White Oak Crossing,Lennar,,Mason Drive
-"Little Rock, AR",White Oak Crossing,Lennar,,Northwood Creek Drive
-"Little Rock, AR",White Oak Crossing,Lennar,,Lori Kaye Drive
-"Little Rock, AR",White Oak Crossing,Lennar,,Cypress Knee Drive
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Olympic Drive
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Huntington Drive
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Laney Loop
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Kinley Brook Lane
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Sarah Alyse Lane
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Kyndall Lauren Lane
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Swayze Rhys Lane
-"Little Rock, AR",Cypress Bend,Lennar,,IM Drive
-"Little Rock, AR",Kensington Place,D.R. Horton,,Newark
-"Little Rock, AR",Cypress Bend,Lennar,,Sofia Drive
-"Little Rock, AR",The Villas Hope Valley,D.R. Horton,,Kelton Lane
-"Little Rock, AR",Crescent Grove,D.R. Horton,,Chakka Loop
-"Little Rock, AR",Panther Cove,Lennar,,Gussy Lane
-"Little Rock, AR",White Oak Crossing,Lennar,,Fitzgerald Lane
-"Little Rock, AR",White Oak Crossing,Lennar,,Stacey Lane
-"Little Rock, AR",White Oak Crossing,Lennar,,Kennedy Lane
-"Little Rock, AR",Deerfield,Lennar,,Remington Lane
-"Little Rock, AR",Deerfield,Lennar,,Doe Run Drive
-"Little Rock, AR",Deerfield,Lennar,,Ruger Cove
-"Little Rock, AR",Deerfield,Lennar,,Buckshot Drive
-"Little Rock, AR",Deerfield,Lennar,,Sig Cove
-"Little Rock, AR",Stagecoach Meadows,Lennar,,Leruss Boulevard
-"Little Rock, AR",Springlake Trails,Lennar,,River Creek Lane
-"Little Rock, AR",Springlake Trails,Lennar,,River Valley Drive
-"Little Rock, AR",Springlake Trails,Lennar,,Thompson Branch Trail
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Meadows Drive
-"Little Rock, AR",The Grove At Centennial Valley,Lennar,,Cobblefield Cove
-"Little Rock, AR",Southfork Ranch,Lennar,I,King Ranch Drive
-"Little Rock, AR",Midland Estates,Lennar,Phase 1,Ted Craig Drive
-"Little Rock, AR",Midland Estates,Lennar,Phase 1,Cornus Drive
-"Little Rock, AR",Midland Estates,Lennar,Phase 1,Red Maple Lane
-"Little Rock, AR",Magnolia Manor,Lennar,,Gum Spring Road
-"Little Rock, AR",Moonlight Meadows,D.R. Horton,1,Moonlight Graham Boulevard
-"Little Rock, AR",The Villas Hope Valley,D.R. Horton,1,Alyece Lane
-"Little Rock, AR",Kensington Place,D.R. Horton,,Sloan Drive
-"Little Rock, AR",Kensington Place,D.R. Horton,,Wise Road
-"Little Rock, AR",Kensington Place,D.R. Horton,,Meridian Drive
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,1,Molly Drive
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,1,Mikah Drive
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,1,Molly Lane
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,3,Riley Lane
-"Little Rock, AR",The Reserve At Country Club,D.R. Horton,2,Lainey Lane
-"Little Rock, AR",The Vineyard,D.R. Horton,,E Reliance Court
-"Little Rock, AR",The Vineyard,D.R. Horton,,Vineyard Drive
-"Little Rock, AR",The Vineyard,D.R. Horton,,E Fredonia Court
+metro_area,community_name,city,builder,phase,street_name
+"Little Rock, AR",Kensington Place,Bryant,D.R. Horton,,Warwick Dr
+"Little Rock, AR",Wolfsbridge,Cabot,D.R. Horton,,Wolfsbridge Loop
+"Little Rock, AR",The Villas Hope Valley,Hensley,D.R. Horton,,Preston Ln
+"Little Rock, AR",Stone Canyon,Maumelle,D.R. Horton,,Bighorn Trail
+"Little Rock, AR",Stone Canyon,Maumelle,D.R. Horton,,Stone Canyon Drive
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,,Cain Trail
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,,Lainey Drive
+"Little Rock, AR",River Plantation,Mayflower,D.R. Horton,,Plantation Dr
+"Little Rock, AR",The Vineyard,Mayflower,D.R. Horton,,E Sunbelt Court
+"Little Rock, AR",Moonlight Meadows,Ward,D.R. Horton,,Moonlight Graham Road
+"Little Rock, AR",Midland Estates,Alexander,Lennar,Phase 1,Sam Tillery Dr
+"Little Rock, AR",The Meadows At Parkway Trails,Bauxite,Lennar,,Chesapeake Trl
+"Little Rock, AR",The Meadows At Parkway Trails,Bauxite,Lennar,,Potomac Trl
+"Little Rock, AR",Farmhouse At Ridge Creek,Beebe,Lennar,,
+"Little Rock, AR",Southfork Ranch,Beebe,Lennar,,Powder River Drive
+"Little Rock, AR",Southfork Ranch,Beebe,Lennar,,Southfork Drive
+"Little Rock, AR",Cottage Walk,Benton,Lennar,Phase 1,Rambling Brook Drive
+"Little Rock, AR",Rosemary Fields,Benton,Lennar,,Flat Wood Ave
+"Little Rock, AR",Rosemary Fields,Benton,Lennar,,Flatwood Ave
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Bassett St
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Croft Ave
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Hollywood Ave
+"Little Rock, AR",Stagecoach Meadows,Cabot,Lennar,,Maddison Rachael
+"Little Rock, AR",Stagecoach Meadows,Cabot,Lennar,,Nona Ruth Lane
+"Little Rock, AR",Gold Creek Falls,Conway,Lennar,,
+"Little Rock, AR",Nolan Place,Conway,Lennar,,
+"Little Rock, AR",Springlake Trails,Hensley,Lennar,,Duck Creek Drive
+"Little Rock, AR",Springlake Trails,Hensley,Lennar,,Thompson Branch Trl
+"Little Rock, AR",Cypress Bend,Maumelle,Lennar,,Jonathan Drive
+"Little Rock, AR",Cypress Bend,Maumelle,Lennar,,Lucy Lane
+"Little Rock, AR",The Vineyard,Mayflower,Lennar,,Cabernet Way
+"Little Rock, AR",The Vineyard,Mayflower,Lennar,,E Concord Road
+"Little Rock, AR",Woods At White Oak,North Little Rock,Lennar,,
+"Little Rock, AR",Magnolia Manor,Searcy,Lennar,,Magnolia Springs Drive
+"Little Rock, AR",Magnolia Manor,,Lennar,,Manor Court
+"Little Rock, AR",Magnolia Manor,Searcy,Lennar,,Manor Oaks Blvd
+"Little Rock, AR",Cottage Walk,Benton,Lennar,Phase 1,Raven Walk Dr
+"Little Rock, AR",Deerfield,Ward,Lennar,,Ten Point Lane
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,W Westwood Creek Drive
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Mason Drive
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Northwood Creek Drive
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Lori Kaye Drive
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Cypress Knee Drive
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Olympic Drive
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Huntington Drive
+"Little Rock, AR",Stagecoach Meadows,Little Rock,Lennar,,Laney Loop
+"Little Rock, AR",Stagecoach Meadows,Little Rock,Lennar,,Kinley Brook Lane
+"Little Rock, AR",Stagecoach Meadows,Little Rock,Lennar,,Sarah Alyse Lane
+"Little Rock, AR",Stagecoach Meadows,Little Rock,Lennar,,Kyndall Lauren Lane
+"Little Rock, AR",Stagecoach Meadows,Little Rock,Lennar,,Swayze Rhys Lane
+"Little Rock, AR",Cypress Bend,Maumelle,Lennar,,IM Drive
+"Little Rock, AR",Kensington Place,Alexander,D.R. Horton,,Newark
+"Little Rock, AR",Cypress Bend,Maumelle,Lennar,,Sofia Drive
+"Little Rock, AR",The Villas Hope Valley,Hensley,D.R. Horton,,Kelton Lane
+"Little Rock, AR",Crescent Grove,,D.R. Horton,,Chakka Loop
+"Little Rock, AR",Panther Cove,,Lennar,,Gussy Lane
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Fitzgerald Lane
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Stacey Lane
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,Kennedy Lane
+"Little Rock, AR",Deerfield,Ward,Lennar,,Remington Lane
+"Little Rock, AR",Deerfield,Ward,Lennar,,Doe Run Drive
+"Little Rock, AR",Deerfield,Ward,Lennar,,Ruger Cove
+"Little Rock, AR",Deerfield,Ward,Lennar,,Buckshot Drive
+"Little Rock, AR",Deerfield,Ward,Lennar,,Sig Cove
+"Little Rock, AR",Stagecoach Meadows,Little Rock,Lennar,,Leruss Boulevard
+"Little Rock, AR",Springlake Trails,,Lennar,,River Creek Lane
+"Little Rock, AR",Springlake Trails,,Lennar,,River Valley Drive
+"Little Rock, AR",Springlake Trails,,Lennar,,Thompson Branch Trail
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Meadows Drive
+"Little Rock, AR",The Grove At Centennial Valley,Benton,Lennar,,Cobblefield Cove
+"Little Rock, AR",Southfork Ranch,Beebe,Lennar,I,King Ranch Drive
+"Little Rock, AR",Midland Estates,Alexander,Lennar,Phase 1,Ted Craig Drive
+"Little Rock, AR",Midland Estates,Alexander,Lennar,Phase 1,Cornus Drive
+"Little Rock, AR",Midland Estates,Alexander,Lennar,Phase 1,Red Maple Lane
+"Little Rock, AR",Magnolia Manor,,Lennar,,Gum Spring Road
+"Little Rock, AR",Moonlight Meadows,,D.R. Horton,1,Moonlight Graham Boulevard
+"Little Rock, AR",The Villas Hope Valley,Hensley,D.R. Horton,1,Alyece Lane
+"Little Rock, AR",Kensington Place,Alexander,D.R. Horton,,Sloan Drive
+"Little Rock, AR",Kensington Place,Alexander,D.R. Horton,,Wise Road
+"Little Rock, AR",Kensington Place,Alexander,D.R. Horton,,Meridian Drive
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,1,Molly Drive
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,1,Mikah Drive
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,1,Molly Lane
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,3,Riley Lane
+"Little Rock, AR",The Reserve At Country Club,Maumelle,D.R. Horton,2,Lainey Lane
+"Little Rock, AR",The Vineyard,Mayflower,D.R. Horton,,E Reliance Court
+"Little Rock, AR",The Vineyard,Mayflower,D.R. Horton,,Vineyard Drive
+"Little Rock, AR",The Vineyard,Mayflower,D.R. Horton,,E Fredonia Court
+"Little Rock, AR",Crescent Grove,North Little Rock,D.R. Horton,,
+"Little Rock, AR",Midland Estates,Alexander,Lennar,,Sam Tillery Dr
+"Little Rock, AR",Cottage Walk,Benton,Lennar,,Rambling Brook Drive
+"Little Rock, AR",Panther Cove,Benton,Lennar,,
+"Little Rock, AR",White Oak Crossing,North Little Rock,Lennar,,
+"Little Rock, AR",Deerfield,Ward,Lennar,,

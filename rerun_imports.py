@@ -66,11 +66,12 @@ def main():
             new_streets, ambiguous = [], 0
             csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
         elif entry["source_type"] == "mls":
-            matched_rows, new_streets, unmatched, ambiguous = import_mls_export(
+            matched_rows, new_streets, unmatched, ambiguous, city_by_community = import_mls_export(
                 path, metro_config, known_streets, known_communities
             )
             if new_streets:
                 csv_io.upsert_communities(communities_path, new_streets)
+            csv_io.backfill_city(communities_path, city_by_community)
             csv_io.upsert_rentals(rentals_path, matched_rows, today_str)
         else:  # sales
             any_sales_source = True

@@ -213,6 +213,9 @@ h1 {
   font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
   border: 1px solid var(--line-strong); border-radius: 3px; padding: 1px 6px;
 }
+.community-city {
+  font-weight: 400; font-size: 12.5px; color: var(--ink-soft);
+}
 .community-pipeline {
   margin-top: 5px; font-size: 12px; color: var(--ink-soft);
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px;
@@ -378,7 +381,7 @@ function buildModel() {
 
   const findOrCreateEntry = (builderMap, communityName, builder) => {
     if (!builderMap.has(communityName)) {
-      builderMap.set(communityName, { name: communityName, builder, phases: new Set(), streets: [], rentals: [], sales: [] });
+      builderMap.set(communityName, { name: communityName, builder, city: '', phases: new Set(), streets: [], rentals: [], sales: [] });
     }
     return builderMap.get(communityName);
   };
@@ -388,6 +391,7 @@ function buildModel() {
     const entry = findOrCreateEntry(builderMap, c.community_name, c.builder);
     if (c.phase) entry.phases.add(c.phase);
     if (c.street_name) entry.streets.push(c.street_name);
+    if (c.city && !entry.city) entry.city = c.city;
   }
   for (const r of RENTALS) {
     const builderMap = byBuilder[r.builder];
@@ -541,7 +545,7 @@ function communityHtml(entry, idx) {
       <div class="community-head">
         <span class="chevron"></span>
         <div class="community-name-block">
-          <div class="community-name">${esc(entry.name)}${[...entry.phases].sort().map(p => `<span class="phase-tag">${esc(p)}</span>`).join('')}</div>
+          <div class="community-name">${esc(entry.name)}${entry.city ? `<span class="community-city">${esc(entry.city)}</span>` : ''}${[...entry.phases].sort().map(p => `<span class="phase-tag">${esc(p)}</span>`).join('')}</div>
           <div class="community-streets">${esc(streetsLine)}</div>
           ${pipelineHtml(entry)}
         </div>

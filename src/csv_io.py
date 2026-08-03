@@ -5,7 +5,7 @@ import os
 import re
 
 COMMUNITIES_COLUMNS = [
-    "metro_area", "community_name", "builder", "phase", "street_name",
+    "metro_area", "community_name", "city", "builder", "phase", "street_name",
 ]
 
 RENTALS_COLUMNS = [
@@ -77,6 +77,34 @@ def upsert_communities(path, new_rows):
         writer.writeheader()
         for row in existing.values():
             writer.writerow({k: row.get(k, "") for k in COMMUNITIES_COLUMNS})
+
+
+def backfill_city(path, city_by_community):
+    """city_by_community: {(community_name, builder): city}. Fills in the
+    city column on any existing communities.csv row that's missing it -
+    city is a per-community fact, but only newly-added rows get it set at
+    import time, so older rows need a pass like this to catch up."""
+    if not city_by_community or not os.path.exists(path):
+        return 0
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    updated = 0
+    for row in rows:
+        if row.get("city"):
+            continue
+        city = city_by_community.get((row.get("community_name", ""), row.get("builder", "")))
+        if city:
+            row["city"] = city
+            updated += 1
+
+    if updated:
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=COMMUNITIES_COLUMNS)
+            writer.writeheader()
+            for row in rows:
+                writer.writerow({k: row.get(k, "") for k in COMMUNITIES_COLUMNS})
+    return updated
 
 
 # Fields that describe one specific rental *episode* (a single listing/

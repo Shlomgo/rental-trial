@@ -114,7 +114,8 @@ def _build_row(metro_config, community_name, builder, phase, street_name, addres
 
 
 def import_mls_export(export_csv_path, metro_config, known_streets, known_communities=None):
-    """Returns (matched_rows, new_streets, unmatched_count, ambiguous_count).
+    """Returns (matched_rows, new_streets, unmatched_count, ambiguous_count,
+    city_by_community).
 
     matched_rows: dicts with RENTALS_COLUMNS keys (minus last_checked_date/
     status_changed), for rows that matched a known street OR a known
@@ -125,6 +126,9 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
     so a sold-out street stays on record even after this one export.
     ambiguous_count: rows whose subdivision text matched more than one
     known community - skipped rather than guessed.
+    city_by_community: {(community_name, builder): city}, the City column
+    value observed for every matched row - the caller can use this to
+    backfill communities.csv rows that don't have a city on file yet.
     """
     metro_cities = {c.lower() for c in getattr(metro_config, "CITIES", [])}
     known_communities = known_communities or []
@@ -137,6 +141,7 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
     matched_rows = []
     # community_name -> [{"norm": ..., "display": ..., "builder": ..., "phase": ...}]
     new_street_candidates = {}
+    city_by_community = {}
     unmatched = 0
     ambiguous = 0
 
@@ -152,6 +157,8 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
             match = _match_street(street_guess, known_streets)
 
             if match:
+                if city:
+                    city_by_community.setdefault((match["community_name"], match["builder"]), city)
                 matched_rows.append(_build_row(
                     metro_config, match["community_name"], match["builder"],
                     match.get("phase", ""), match["street_name"], address, city, row,
@@ -173,6 +180,8 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
             community = subdivision_matches[0]
 
             phase = community.get("phase") or extract_phase(subdivision)
+            if city:
+                city_by_community.setdefault((community["community_name"], community["builder"]), city)
             matched_rows.append(_build_row(
                 metro_config, community["community_name"], community["builder"],
                 phase, street_guess, address, city, row,
@@ -202,13 +211,14 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
             else:
                 candidates.append({
                     "norm": norm, "display": street_guess,
-                    "builder": community["builder"], "phase": phase,
+                    "builder": community["builder"], "phase": phase, "city": city,
                 })
 
     new_streets = [
         {
             "metro_area": metro_config.METRO_AREA,
             "community_name": community_name,
+            "city": c["city"],
             "builder": c["builder"],
             "phase": c["phase"],
             "street_name": c["display"],
@@ -217,4 +227,4 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
         for c in candidates
     ]
 
-    return matched_rows, new_streets, unmatched, ambiguous
+    return matched_rows, new_streets, unmatched, ambiguous, city_by_community

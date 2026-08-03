@@ -36,7 +36,7 @@ def main():
 
     known_streets = load_known_streets(communities_path)
     known_communities = load_known_communities(communities_path)
-    matched_rows, new_streets, unmatched, ambiguous = import_mls_export(
+    matched_rows, new_streets, unmatched, ambiguous, city_by_community = import_mls_export(
         args.export_csv, metro_config, known_streets, known_communities
     )
 
@@ -51,6 +51,10 @@ def main():
     if new_streets:
         csv_io.upsert_communities(communities_path, new_streets)
         print(f"Added {len(new_streets)} new street row(s) to {communities_path}")
+
+    backfilled = csv_io.backfill_city(communities_path, city_by_community)
+    if backfilled:
+        print(f"Filled in city for {backfilled} existing communities.csv row(s).")
 
     rentals_path = os.path.join(
         args.output_dir, f"{metro_config.METRO_SLUG}-rentals.csv"

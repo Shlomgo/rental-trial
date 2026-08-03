@@ -24,6 +24,7 @@ def communities_to_rows(metro_config, communities):
             rows.append({
                 "metro_area": metro_config.METRO_AREA,
                 "community_name": c["community_name"],
+                "city": c.get("city", ""),
                 "builder": c["builder"],
                 "phase": c["phase"],
                 "street_name": street,
