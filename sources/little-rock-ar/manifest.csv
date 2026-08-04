@@ -12,3 +12,4 @@ mls-2026-08-03.csv,mls,"MLS rental/lease export, batch 3 (statewide)",2026-08-03
 manual-entries.csv,manual,Listings pasted directly in chat (no original export file),2026-08-04
 apify-drive-3.csv,apify,"Zillow Maumelle export, batch 3 (uploaded directly)",2026-08-03
 apify-drive-5.csv,apify,"Zillow Maumelle export, batch 5 (uploaded directly)",2026-08-04
+apify-run-2026-08-04.csv,apify,Apify actor runs 34n6rBUHifdpFK36L + HH4Zc6uuQyH1ir21Z (2026-08-04T18:10Z),2026-08-04
