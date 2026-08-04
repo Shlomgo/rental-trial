@@ -1,0 +1,184 @@
+<title>New-Construction Rental Tracker</title>
+<style>
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; }
+}
+:root {
+  --paper: #E7ECE2;
+  --paper-raised: #FBFCF8;
+  --ink: #16211C;
+  --ink-soft: #56655C;
+  --ink-faint: #8B978D;
+  --line: #DAE0D6;
+  --line-strong: #C2CBBC;
+  --accent: #2B6E4E;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E1EEE6;
+  --clay: #A85434;
+  --clay-soft: #F3E4DB;
+  --slate: #3E5C74;
+  --slate-soft: #E1E8ED;
+  --shadow: 0 1px 2px rgba(22,33,28,0.06), 0 1px 1px rgba(22,33,28,0.04);
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #10160F;
+    --paper-raised: #16201A;
+    --ink: #E6ECE4;
+    --ink-soft: #93A398;
+    --ink-faint: #5E6D64;
+    --line: #263028;
+    --line-strong: #34413A;
+    --accent: #59BC8C;
+    --accent-ink: #0C1710;
+    --accent-soft: #16281F;
+    --clay: #E2895A;
+    --clay-soft: #2C1F17;
+    --slate: #86ADCE;
+    --slate-soft: #182530;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10160F; --paper-raised: #16201A; --ink: #E6ECE4; --ink-soft: #93A398;
+  --ink-faint: #5E6D64; --line: #263028; --line-strong: #34413A; --accent: #59BC8C;
+  --accent-ink: #0C1710; --accent-soft: #16281F; --clay: #E2895A; --clay-soft: #2C1F17;
+  --slate: #86ADCE; --slate-soft: #182530;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --paper: #E7ECE2; --paper-raised: #FBFCF8; --ink: #16211C; --ink-soft: #56655C;
+  --ink-faint: #8B978D; --line: #DAE0D6; --line-strong: #C2CBBC; --accent: #2B6E4E;
+  --accent-ink: #FFFFFF; --accent-soft: #E1EEE6; --clay: #A85434; --clay-soft: #F3E4DB;
+  --slate: #3E5C74; --slate-soft: #E1E8ED;
+  --shadow: 0 1px 2px rgba(22,33,28,0.06), 0 1px 1px rgba(22,33,28,0.04);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+::selection { background: var(--accent-soft); color: var(--ink); }
+
+.wrap { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+header.page {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 32px; padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); font-weight: 600;
+}
+h1 {
+  font-family: var(--serif); font-weight: 400; font-size: 34px;
+  letter-spacing: -0.01em; margin: 2px 0 4px; color: var(--ink); text-wrap: balance;
+}
+.subhead { color: var(--ink-soft); font-size: 14.5px; max-width: 62ch; }
+
+.metro-list { display: flex; flex-direction: column; gap: 10px; }
+
+.metro-card {
+  display: flex; align-items: center; gap: 20px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease;
+}
+.metro-card:hover { border-color: var(--accent); }
+.metro-card.disabled { opacity: 0.55; pointer-events: none; }
+
+.metro-main { flex: 1; min-width: 0; }
+.metro-name {
+  font-family: var(--serif); font-weight: 400; font-size: 19px; color: var(--ink);
+}
+.metro-builders {
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+  margin-top: 3px; letter-spacing: 0.02em;
+}
+
+.metro-stats {
+  display: flex; gap: 26px; flex: none;
+}
+.stat { text-align: right; min-width: 64px; }
+.stat .n {
+  font-family: var(--serif); font-size: 20px; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stat .n.faint { color: var(--ink-faint); }
+.stat .l {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--ink-faint); margin-top: 2px;
+}
+
+.metro-arrow {
+  flex: none; width: 9px; height: 9px;
+  border-right: 1.5px solid var(--ink-faint);
+  border-top: 1.5px solid var(--ink-faint);
+  transform: rotate(45deg);
+}
+
+.metro-updated {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+  margin-top: 4px;
+}
+
+.empty-note {
+  font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint);
+  padding: 14px 0;
+}
+
+footer.page {
+  margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+}
+
+@media (max-width: 560px) {
+  .metro-card { flex-wrap: wrap; }
+  .metro-stats { gap: 16px; }
+}
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <span class="eyebrow">New-construction rental tracker</span>
+    <h1>Metros</h1>
+    <div class="subhead">One dashboard per metro, tracking D.R. Horton and Lennar communities: rental activity and the new-construction sales pipeline.</div>
+  </header>
+
+  <div class="metro-list">
+    
+    <a class="metro-card" href="https://claude.ai/code/artifact/5170beda-e22d-451a-8104-a44e243cd0b6" target="_blank" rel="noopener">
+      <div class="metro-main">
+        <div class="metro-name">Little Rock, AR</div>
+        <div class="metro-builders">D.R. Horton &middot; Lennar</div>
+        <div class="metro-updated">Updated 2026-08-03</div>
+      </div>
+      <div class="metro-stats">
+        <div class="stat"><div class="n">27</div><div class="l">Communities</div></div>
+        <div class="stat"><div class="n">28</div><div class="l">For rent</div></div>
+        <div class="stat"><div class="n">9.4%</div><div class="l">Sold</div></div>
+      </div>
+      <span class="metro-arrow"></span>
+    </a>
+  </div>
+
+  <footer class="page">Generated 2026-08-04</footer>
+</div>

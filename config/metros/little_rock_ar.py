@@ -35,3 +35,7 @@ LENNAR_EXCLUDE_CITY_SLUGS = {"promo", "event", "little-rock-singlefamily"}
 
 # Rental sources to check in Step 2, in priority order.
 RENTAL_SOURCES = ["zillow", "realtor", "apartments_com", "rent_com"]
+
+# Published Claude Artifact URL for this metro's dashboard (generate_dashboard.py
+# output). Set once you've published it; generate_index.py links out to this.
+DASHBOARD_ARTIFACT_URL = "https://claude.ai/code/artifact/5170beda-e22d-451a-8104-a44e243cd0b6"
