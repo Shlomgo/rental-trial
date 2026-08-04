@@ -36,4 +36,4 @@ RENTAL_SOURCES = ["zillow", "realtor", "apartments_com", "rent_com"]
 
 # Published Claude Artifact URL for this metro's dashboard (generate_dashboard.py
 # output). Set once you've published it; generate_index.py links out to this.
-DASHBOARD_ARTIFACT_URL = ""
+DASHBOARD_ARTIFACT_URL = "https://claude.ai/code/artifact/21660801-3214-4c66-b5c5-05889f2811de"

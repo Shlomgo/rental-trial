@@ -1,28 +1,4 @@
-#!/usr/bin/env python3
-"""
-Generates a self-contained HTML dashboard from a metro's communities.csv
-and rentals.csv: communities grouped by builder, each showing its rental
-count at a glance, expandable to the full rental detail table. Re-run this
-any time either CSV changes so the dashboard reflects the latest data.
-
-Usage:
-    python3 generate_dashboard.py little-rock-ar
-"""
-import argparse
-import csv
-import datetime
-import json
-import os
-
-from config.metros import get_metro
-
-
-def read_csv(path):
-    with open(path, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
-
-
-TEMPLATE = r"""<title>__METRO_AREA__ New-Construction Rental Tracker</title>
+<title>Hickory, NC New-Construction Rental Tracker</title>
 <style>
 @media (prefers-color-scheme: light) {
   :root { color-scheme: light; }
@@ -303,7 +279,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 <div class="wrap">
   <header class="page">
     <span class="eyebrow">New-Construction Rental Tracker</span>
-    <h1>__METRO_AREA__ Metro</h1>
+    <h1>Hickory, NC Metro</h1>
     <p class="subhead">Rental activity on streets built by D.R. Horton and Lennar, cross-referenced from builder sitemaps, MLS lease records, and manually verified listings.</p>
     <div class="meta-row">
       <span>Data as of <b id="generated-date"></b></span>
@@ -321,11 +297,11 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 </div>
 
 <script>
-const COMMUNITIES = __COMMUNITIES_JSON__;
-const RENTALS = __RENTALS_JSON__;
-const TOTALS = __TOTALS_JSON__;
-const SALES = __SALES_JSON__;
-const GENERATED = __GENERATED_DATE__;
+const COMMUNITIES = [{"metro_area": "Hickory, NC", "community_name": "Cline Village", "city": "Conover", "builder": "D.R. Horton", "phase": "", "street_name": "Ashton Drive Nw"}, {"metro_area": "Hickory, NC", "community_name": "Cline Village", "city": "Conover", "builder": "D.R. Horton", "phase": "", "street_name": "Caroline Court Nw"}, {"metro_area": "Hickory, NC", "community_name": "Cline Village", "city": "Conover", "builder": "D.R. Horton", "phase": "", "street_name": "Charles Street Nw"}, {"metro_area": "Hickory, NC", "community_name": "Cline Village", "city": "Conover", "builder": "D.R. Horton", "phase": "", "street_name": "Maxwell Henry Lane Nw"}, {"metro_area": "Hickory, NC", "community_name": "Falls At Hickory", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "13th Street Ne"}, {"metro_area": "Hickory, NC", "community_name": "Falls At Hickory", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "37th Avenue Lane Ne"}, {"metro_area": "Hickory, NC", "community_name": "Hamptons At Hickory", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "13th Avenue Drive Ne"}, {"metro_area": "Hickory, NC", "community_name": "Hamptons At Hickory", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "14th Avenue Court Ne"}, {"metro_area": "Hickory, NC", "community_name": "Hamptons At Hickory", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "5th Street Drive Ne"}, {"metro_area": "Hickory, NC", "community_name": "Huffman Ridge", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "10th Street Se"}, {"metro_area": "Hickory, NC", "community_name": "Huffman Ridge", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "20th Ave Loop Se"}, {"metro_area": "Hickory, NC", "community_name": "Zion Springs", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "Avila Street"}, {"metro_area": "Hickory, NC", "community_name": "Zion Springs", "city": "Hickory", "builder": "D.R. Horton", "phase": "", "street_name": "Mammoth Road"}, {"metro_area": "Hickory, NC", "community_name": "The Villages Of Maiden", "city": "Maiden", "builder": "D.R. Horton", "phase": "", "street_name": "Goose Fair Road"}, {"metro_area": "Hickory, NC", "community_name": "The Falls At Newton", "city": "Newton", "builder": "D.R. Horton", "phase": "", "street_name": "Dazzle Loop"}, {"metro_area": "Hickory, NC", "community_name": "The Falls At Newton", "city": "Newton", "builder": "D.R. Horton", "phase": "", "street_name": "Falls Cove Road"}, {"metro_area": "Hickory, NC", "community_name": "The Falls At Newton", "city": "Newton", "builder": "D.R. Horton", "phase": "", "street_name": "Janie Circle"}, {"metro_area": "Hickory, NC", "community_name": "Oxford Glen", "city": "Claremont", "builder": "Lennar", "phase": "", "street_name": "Oxford Glen Drive"}, {"metro_area": "Hickory, NC", "community_name": "Meadows At Lake Hickory", "city": "Hickory", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Hickory, NC", "community_name": "Shannon Woods", "city": "Maiden", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Hickory, NC", "community_name": "Buffalo Ridge", "city": "Newton", "builder": "Lennar", "phase": "", "street_name": ""}];
+const RENTALS = [];
+const TOTALS = [];
+const SALES = [];
+const GENERATED = "2026-08-04";
 const BUILDER_ORDER = ["D.R. Horton", "Lennar"];
 
 const TOTALS_BY_KEY = new Map(TOTALS.map(t => [t.community_name + '|' + t.builder, t]));
@@ -615,50 +591,3 @@ document.getElementById('collapse-all').addEventListener('click', () => {
 
 render();
 </script>
-"""
-
-
-def generate(metro_slug, output_dir="output"):
-    metro_config = get_metro(metro_slug)
-    communities_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-communities.csv")
-    rentals_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-rentals.csv")
-    totals_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-community-totals.csv")
-    sales_ledger_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-sales-records.csv")
-    if not os.path.exists(communities_path):
-        raise SystemExit(f"Run run_discovery.py for {metro_slug} first.")
-
-    communities = read_csv(communities_path)
-    rentals = read_csv(rentals_path) if os.path.exists(rentals_path) else []
-    totals = read_csv(totals_path) if os.path.exists(totals_path) else []
-    sales_records = read_csv(sales_ledger_path) if os.path.exists(sales_ledger_path) else []
-    generated = datetime.date.today().isoformat()
-
-    communities_json = json.dumps(communities, ensure_ascii=False).replace("</script", "<\\/script")
-    rentals_json = json.dumps(rentals, ensure_ascii=False).replace("</script", "<\\/script")
-    totals_json = json.dumps(totals, ensure_ascii=False).replace("</script", "<\\/script")
-    sales_json = json.dumps(sales_records, ensure_ascii=False).replace("</script", "<\\/script")
-
-    out = TEMPLATE.replace("__METRO_AREA__", metro_config.METRO_AREA)
-    out = out.replace("__COMMUNITIES_JSON__", communities_json)
-    out = out.replace("__RENTALS_JSON__", rentals_json)
-    out = out.replace("__TOTALS_JSON__", totals_json)
-    out = out.replace("__SALES_JSON__", sales_json)
-    out = out.replace("__GENERATED_DATE__", json.dumps(generated))
-
-    dashboard_path = os.path.join(output_dir, f"{metro_config.METRO_SLUG}-dashboard.html")
-    with open(dashboard_path, "w", encoding="utf-8") as f:
-        f.write(out)
-    return dashboard_path
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("metro_slug", help="e.g. little-rock-ar")
-    parser.add_argument("--output-dir", default="output")
-    args = parser.parse_args()
-    path = generate(args.metro_slug, args.output_dir)
-    print(f"Wrote {path}")
-
-
-if __name__ == "__main__":
-    main()

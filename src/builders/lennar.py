@@ -45,6 +45,11 @@ def discover(metro_config, session):
     """
     region_path = metro_config.LENNAR_REGION_PATH
     exclude_city_slugs = getattr(metro_config, "LENNAR_EXCLUDE_CITY_SLUGS", set())
+    # A builder's "region" path can be much bigger than the actual metro
+    # (e.g. Hickory, NC is filed under Lennar's whole "Charlotte" region
+    # alongside Charlotte, Gastonia, Waxhaw, ...), so region_path alone
+    # isn't a safe filter - only keep cities in metro_config.CITIES.
+    allowed_cities = {c.lower() for c in getattr(metro_config, "CITIES", [])}
     prefix = f"{BASE}/{region_path}/"
 
     urls = _fetch_sitemap_urls(session)
@@ -59,6 +64,8 @@ def discover(metro_config, session):
             continue
         city_slug, community_slug = segs[0], segs[1]
         if city_slug in exclude_city_slugs:
+            continue
+        if allowed_cities and _slug_to_title(city_slug).lower() not in allowed_cities:
             continue
         key = (city_slug, community_slug)
         communities.add(key)

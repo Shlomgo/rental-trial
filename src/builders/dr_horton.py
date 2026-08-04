@@ -52,6 +52,11 @@ def discover(metro_config, session):
     region_path = metro_config.DR_HORTON_REGION_PATH
     prefix_https = f"{BASE}/{region_path}/"
     prefix_http = prefix_https.replace("https://", "http://")
+    # A builder's "region" path can be much bigger than the actual metro
+    # (e.g. Hickory, NC is filed under D.R. Horton's whole "Charlotte"
+    # region alongside Charlotte, Gastonia, Monroe, ...), so region_path
+    # alone isn't a safe filter - only keep cities in metro_config.CITIES.
+    allowed_cities = {c.lower() for c in getattr(metro_config, "CITIES", [])}
 
     urls = _fetch_sitemap_urls(session)
     region_urls = [
@@ -67,6 +72,8 @@ def discover(metro_config, session):
             continue  # city hub page, e.g. .../little-rock
         city_slug, community_slug = segs[0], segs[1]
         if community_slug in ("floor-plans", "qmis"):
+            continue
+        if allowed_cities and _slug_to_title(city_slug).lower() not in allowed_cities:
             continue
         streets = communities.setdefault((city_slug, community_slug), set())
         if len(segs) >= 4 and segs[2] == "qmis":
