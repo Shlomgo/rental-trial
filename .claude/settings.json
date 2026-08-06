@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch",
+      "ToolSearch",
+      "mcp__Apify__get-dataset-items",
+      "mcp__Apify__get-actor-run",
+      "mcp__Apify__get-key-value-store-record",
+      "mcp__Apify__call-actor"
+    ]
+  }
+}
