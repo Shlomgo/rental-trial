@@ -15,6 +15,13 @@ RENTALS_COLUMNS = [
     "last_checked_date", "status_changed",
 ]
 
+QMI_LISTINGS_COLUMNS = [
+    "community_name", "city", "full_address", "lot_number", "beds", "baths",
+    "garage", "story", "sqft", "status", "price", "first_seen_date",
+    "last_seen_date", "last_checked_date", "price_changed", "removed_date",
+    "source_url",
+]
+
 
 _STREET_SUFFIX_SUBS = [
     (r"\bdrive\b", "dr"), (r"\blane\b", "ln"), (r"\bcourt\b", "ct"),
@@ -212,3 +219,81 @@ def upsert_rentals(path, new_rows, today_str):
         writer.writeheader()
         for row in existing.values():
             writer.writerow({k: row.get(k, "") for k in RENTALS_COLUMNS})
+
+
+def upsert_qmi_listings(path, community_name, city, source_url, new_rows, today_str):
+    """Upsert this run's fetched QMI ('quick move-in' home) listings into
+    path, and return the list of changes this run introduced:
+    [{"type": "added"|"removed"|"price_changed", "full_address",
+      "old_price", "new_price"}, ...].
+
+    Key = normalized full_address (reuses _normalize_address, same as
+    upsert_rentals, so formatting differences don't create duplicate rows).
+    Never deletes a row - a home no longer on the page gets removed_date set
+    instead, and a home that reappears (relisted) clears it - same
+    "keep history, annotate" convention as RENTALS_COLUMNS' status_changed.
+    """
+    key_fields = ["full_address"]
+    existing = _read_rows(path, key_fields, normalize_address=True)
+    changes = []
+    seen_keys = set()
+
+    for row in new_rows:
+        key = _row_key(row, key_fields, normalize_address=True)
+        seen_keys.add(key)
+        prior = existing.get(key)
+        new_price = str(row["price"]) if row.get("price") is not None else ""
+
+        merged = dict(prior) if prior else {}
+        merged.update({
+            "community_name": community_name,
+            "city": city,
+            "full_address": row.get("full_address", ""),
+            "lot_number": row.get("lot_number", ""),
+            "beds": row.get("beds", ""),
+            "baths": row.get("baths", ""),
+            "garage": row.get("garage", ""),
+            "story": row.get("story", ""),
+            "sqft": str(row["sqft"]) if row.get("sqft") is not None else "",
+            "status": row.get("status", ""),
+            "price": new_price,
+            "last_seen_date": today_str,
+            "last_checked_date": today_str,
+            "source_url": row.get("detail_url") or source_url,
+            "removed_date": "",
+        })
+
+        if not prior:
+            merged["first_seen_date"] = today_str
+            merged["price_changed"] = ""
+            changes.append({"type": "added", "full_address": row.get("full_address", ""),
+                             "old_price": "", "new_price": new_price})
+        else:
+            merged["first_seen_date"] = prior.get("first_seen_date", today_str)
+            merged["price_changed"] = prior.get("price_changed", "")
+            old_price = prior.get("price", "")
+            if prior.get("removed_date"):
+                # Relisted - report it the same way a brand-new home would be,
+                # since that's the actionable signal from the user's POV.
+                changes.append({"type": "added", "full_address": row.get("full_address", ""),
+                                 "old_price": "", "new_price": new_price})
+            elif old_price and new_price and old_price != new_price:
+                note = f"{old_price} -> {new_price} ({today_str})"
+                merged["price_changed"] = f"{merged['price_changed']} | {note}" if merged["price_changed"] else note
+                changes.append({"type": "price_changed", "full_address": row.get("full_address", ""),
+                                 "old_price": old_price, "new_price": new_price})
+        existing[key] = merged
+
+    for key, row in existing.items():
+        if key not in seen_keys and not row.get("removed_date"):
+            row["removed_date"] = today_str
+            changes.append({"type": "removed", "full_address": row.get("full_address", ""),
+                             "old_price": row.get("price", ""), "new_price": ""})
+
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=QMI_LISTINGS_COLUMNS)
+        writer.writeheader()
+        for row in existing.values():
+            writer.writerow({k: row.get(k, "") for k in QMI_LISTINGS_COLUMNS})
+
+    return changes
