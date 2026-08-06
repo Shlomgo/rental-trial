@@ -45,7 +45,8 @@ def _match_street(street_guess, known_streets):
     if not norm:
         return None
     for kn, krow in known_streets:
-        if kn and (kn == norm or kn in norm or norm in kn):
+        if kn and (kn == norm or re.search(rf"\b{re.escape(kn)}\b", norm) or
+                   re.search(rf"\b{re.escape(norm)}\b", kn)):
             return krow
     return None
 

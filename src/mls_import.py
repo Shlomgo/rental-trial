@@ -50,7 +50,8 @@ def _match_street(street_guess, known_streets):
     if not norm:
         return None
     for kn, krow in known_streets:
-        if kn and (kn == norm or kn in norm or norm in kn):
+        if kn and (kn == norm or re.search(rf"\b{re.escape(kn)}\b", norm) or
+                   re.search(rf"\b{re.escape(norm)}\b", kn)):
             return krow
     return None
 
@@ -201,7 +202,9 @@ def import_mls_export(export_csv_path, metro_config, known_streets, known_commun
             # "Olympic Drive")? Merge into the longer/more descriptive form.
             candidates = new_street_candidates.setdefault(community_name, [])
             existing = next(
-                (c for c in candidates if c["norm"] == norm or c["norm"] in norm or norm in c["norm"]),
+                (c for c in candidates if c["norm"] == norm or
+                 re.search(rf"\b{re.escape(c['norm'])}\b", norm) or
+                 re.search(rf"\b{re.escape(norm)}\b", c["norm"])),
                 None,
             )
             if existing:
