@@ -1,0 +1,593 @@
+<title>Oklahoma City, OK New-Construction Rental Tracker</title>
+<style>
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; }
+}
+:root {
+  --paper: #E7ECE2;
+  --paper-raised: #FBFCF8;
+  --ink: #16211C;
+  --ink-soft: #56655C;
+  --ink-faint: #8B978D;
+  --line: #DAE0D6;
+  --line-strong: #C2CBBC;
+  --accent: #2B6E4E;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E1EEE6;
+  --clay: #A85434;
+  --clay-soft: #F3E4DB;
+  --slate: #3E5C74;
+  --slate-soft: #E1E8ED;
+  --status-active: #2B6E4E;
+  --status-active-soft: #E1EEE6;
+  --status-past: #5B6B62;
+  --status-past-soft: #E6E9E3;
+  --status-unknown: #9C6B18;
+  --status-unknown-soft: #F3E9D4;
+  --shadow: 0 1px 2px rgba(22,33,28,0.06), 0 1px 1px rgba(22,33,28,0.04);
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #10160F;
+    --paper-raised: #16201A;
+    --ink: #E6ECE4;
+    --ink-soft: #93A398;
+    --ink-faint: #5E6D64;
+    --line: #263028;
+    --line-strong: #34413A;
+    --accent: #59BC8C;
+    --accent-ink: #0C1710;
+    --accent-soft: #16281F;
+    --clay: #E2895A;
+    --clay-soft: #2C1F17;
+    --slate: #86ADCE;
+    --slate-soft: #182530;
+    --status-active: #59BC8C;
+    --status-active-soft: #16281F;
+    --status-past: #9AA79E;
+    --status-past-soft: #1B231D;
+    --status-unknown: #D9A94B;
+    --status-unknown-soft: #2A2214;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10160F; --paper-raised: #16201A; --ink: #E6ECE4; --ink-soft: #93A398;
+  --ink-faint: #5E6D64; --line: #263028; --line-strong: #34413A; --accent: #59BC8C;
+  --accent-ink: #0C1710; --accent-soft: #16281F; --clay: #E2895A; --clay-soft: #2C1F17;
+  --slate: #86ADCE; --slate-soft: #182530; --status-active: #59BC8C; --status-active-soft: #16281F;
+  --status-past: #9AA79E; --status-past-soft: #1B231D; --status-unknown: #D9A94B; --status-unknown-soft: #2A2214;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --paper: #E7ECE2; --paper-raised: #FBFCF8; --ink: #16211C; --ink-soft: #56655C;
+  --ink-faint: #8B978D; --line: #DAE0D6; --line-strong: #C2CBBC; --accent: #2B6E4E;
+  --accent-ink: #FFFFFF; --accent-soft: #E1EEE6; --clay: #A85434; --clay-soft: #F3E4DB;
+  --slate: #3E5C74; --slate-soft: #E1E8ED; --status-active: #2B6E4E; --status-active-soft: #E1EEE6;
+  --status-past: #5B6B62; --status-past-soft: #E6E9E3; --status-unknown: #9C6B18; --status-unknown-soft: #F3E9D4;
+  --shadow: 0 1px 2px rgba(22,33,28,0.06), 0 1px 1px rgba(22,33,28,0.04);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+::selection { background: var(--accent-soft); color: var(--ink); }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+header.page {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 28px; padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); font-weight: 600;
+}
+h1 {
+  font-family: var(--serif); font-weight: 400; font-size: 34px;
+  letter-spacing: -0.01em; margin: 2px 0 4px; color: var(--ink); text-wrap: balance;
+}
+.subhead { color: var(--ink-soft); font-size: 14.5px; max-width: 62ch; }
+.meta-row {
+  display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px;
+  font-family: var(--mono); font-size: 12px; color: var(--ink-faint);
+}
+.meta-row span b { color: var(--ink-soft); font-weight: 600; }
+
+/* ---- Toolbar ---- */
+.toolbar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+}
+.search { flex: 1 1 260px; max-width: 380px; position: relative; }
+.search input {
+  width: 100%; font-family: var(--sans); font-size: 13.5px;
+  padding: 8px 12px 8px 30px; border: 1px solid var(--line-strong);
+  border-radius: 3px; background: var(--paper-raised); color: var(--ink);
+}
+.search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.search::before {
+  content: ""; position: absolute; left: 10px; top: 50%; width: 11px; height: 11px;
+  transform: translateY(-50%); border: 1.5px solid var(--ink-faint); border-radius: 50%;
+}
+.search::after {
+  content: ""; position: absolute; left: 18px; top: 62%; width: 5px; height: 1.5px;
+  background: var(--ink-faint); transform: rotate(45deg);
+}
+.toolbar-btn {
+  font-family: var(--mono); font-size: 12px; padding: 7px 12px;
+  border-radius: 3px; border: 1px solid var(--line-strong);
+  background: var(--paper-raised); color: var(--ink-soft); cursor: pointer;
+}
+.toolbar-btn:hover { border-color: var(--accent); color: var(--ink); }
+
+/* ---- Builder groups ---- */
+.builder-group { margin-bottom: 30px; }
+.builder-head {
+  display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px;
+}
+.builder-head h2 {
+  font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 0; color: var(--ink);
+}
+.builder-head .totals {
+  font-family: var(--mono); font-size: 12px; color: var(--ink-faint);
+}
+.builder-head .rule { flex: 1; height: 1px; background: var(--line); }
+
+.community-list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+/* ---- Community row (accordion) ---- */
+.community {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.community-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.community-head:hover { background: var(--accent-soft); }
+.chevron {
+  flex: none; width: 9px; height: 9px;
+  border-right: 1.5px solid var(--ink-faint);
+  border-bottom: 1.5px solid var(--ink-faint);
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+.community.expanded .chevron { transform: rotate(45deg); }
+.community-name-block { flex: 1; min-width: 0; }
+.community-name {
+  font-weight: 600; font-size: 14.5px; color: var(--ink);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.community-streets {
+  font-family: var(--mono); font-size: 12px; color: var(--ink-faint);
+  margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.phase-tag {
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+  border: 1px solid var(--line-strong); border-radius: 3px; padding: 1px 6px;
+}
+.community-city {
+  font-weight: 400; font-size: 12.5px; color: var(--ink-soft);
+}
+.community-pipeline {
+  margin-top: 5px; font-size: 12px; color: var(--ink-soft);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px;
+}
+.pipe-stat b { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pipe-planned { color: var(--ink-faint); }
+.pipe-planned b { color: var(--ink-faint); }
+.pipe-sep { color: var(--ink-faint); }
+.rental-summary {
+  flex: none; display: flex; align-items: center; gap: 10px;
+}
+.rental-total {
+  font-family: var(--serif); font-size: 20px; color: var(--ink);
+  min-width: 1.6em; text-align: right;
+}
+.rental-total.zero { color: var(--ink-faint); }
+.mini-pills { display: flex; gap: 4px; }
+.mini-pill {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  padding: 2px 6px; border-radius: 100px; white-space: nowrap;
+}
+.mini-pill.active { background: var(--status-active-soft); color: var(--status-active); }
+.mini-pill.past { background: var(--status-past-soft); color: var(--status-past); }
+.mini-pill.unknown { background: var(--status-unknown-soft); color: var(--status-unknown); }
+
+.community-body {
+  display: none;
+  border-top: 1px solid var(--line);
+  padding: 14px 16px 16px;
+}
+.community.expanded .community-body { display: block; }
+.no-rentals { color: var(--ink-faint); font-size: 13px; padding: 4px 0 2px; }
+.body-section + .body-section { margin-top: 18px; }
+.body-section-label {
+  font-family: var(--mono); font-size: 10.5px; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 6px;
+}
+
+/* ---- Rental detail table ---- */
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 740px; }
+thead th {
+  text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--ink-faint); padding: 8px 10px; border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--line); }
+tbody tr:last-child { border-bottom: none; }
+tbody td { padding: 9px 10px; vertical-align: top; font-size: 13px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.mono, .mono { font-family: var(--mono); font-size: 12px; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600;
+  padding: 3px 9px 3px 7px; border-radius: 100px; white-space: nowrap;
+}
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+.pill.active { background: var(--status-active-soft); color: var(--status-active); }
+.pill.active::before { background: var(--status-active); }
+.pill.past { background: var(--status-past-soft); color: var(--status-past); }
+.pill.past::before { background: var(--status-past); }
+.pill.unknown { background: var(--status-unknown-soft); color: var(--status-unknown); }
+.pill.unknown::before { background: var(--status-unknown); }
+
+.src a, .src span { color: var(--ink-faint); font-size: 11.5px; text-decoration: none; border-bottom: 1px dotted var(--ink-faint); }
+.src a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.blank { color: var(--ink-faint); }
+
+.empty-state { text-align: center; color: var(--ink-faint); padding: 40px 14px; font-size: 13.5px; }
+
+.foot-note { margin-top: 22px; font-size: 12px; color: var(--ink-faint); font-family: var(--mono); }
+
+a:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 1px;
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 27px; }
+  .wrap { padding: 28px 16px 60px; }
+  .rental-summary { flex-direction: column; align-items: flex-end; gap: 4px; }
+  .community-streets { white-space: normal; }
+}
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <span class="eyebrow">New-Construction Rental Tracker</span>
+    <h1>Oklahoma City, OK Metro</h1>
+    <p class="subhead">Rental activity on streets built by D.R. Horton and Lennar, cross-referenced from builder sitemaps, MLS lease records, and manually verified listings.</p>
+    <div class="meta-row">
+      <span>Data as of <b id="generated-date"></b></span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="search"><input type="text" id="search" placeholder="Search community, street, or address&hellip;"></div>
+    <button class="toolbar-btn" id="expand-all">Expand all</button>
+    <button class="toolbar-btn" id="collapse-all">Collapse all</button>
+  </div>
+
+  <div id="builder-groups"></div>
+  <p class="foot-note">Rent shown is the most recently known listed price. "Days" is days on market for that listing. Blank fields mean the source didn't report that value — not guessed.</p>
+</div>
+
+<script>
+const COMMUNITIES = [{"metro_area": "Oklahoma City, OK", "community_name": "Rush Creek", "city": "Edmond", "builder": "D.R. Horton", "phase": "", "street_name": "Hickory Way"}, {"metro_area": "Oklahoma City, OK", "community_name": "Rush Creek", "city": "Edmond", "builder": "D.R. Horton", "phase": "", "street_name": "Rushing Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Woodland Park", "city": "Edmond", "builder": "D.R. Horton", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Prairie Pointe Estates", "city": "Guthrie", "builder": "D.R. Horton", "phase": "", "street_name": "Prairie Vista"}, {"metro_area": "Oklahoma City, OK", "community_name": "Montage", "city": "Mustang", "builder": "D.R. Horton", "phase": "", "street_name": "Sw 40th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wild Horse Canyon Section 3", "city": "Mustang", "builder": "D.R. Horton", "phase": "", "street_name": "E Ruger Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wild Horse Canyon Section 3", "city": "Mustang", "builder": "D.R. Horton", "phase": "", "street_name": "E Stallion Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wild Horse Canyon Section 3", "city": "Mustang", "builder": "D.R. Horton", "phase": "", "street_name": "E Stetson Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wild Horse Canyon Section 3", "city": "Mustang", "builder": "D.R. Horton", "phase": "", "street_name": "S Bear Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wyndemere", "city": "Newcastle", "builder": "D.R. Horton", "phase": "", "street_name": "Indiana Court"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wyndemere", "city": "Newcastle", "builder": "D.R. Horton", "phase": "", "street_name": "Park Place Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wyndemere", "city": "Newcastle", "builder": "D.R. Horton", "phase": "", "street_name": "St Charles Place"}, {"metro_area": "Oklahoma City, OK", "community_name": "Wyndemere", "city": "Newcastle", "builder": "D.R. Horton", "phase": "", "street_name": "States Ave"}, {"metro_area": "Oklahoma City, OK", "community_name": "Woods In Noble", "city": "Noble", "builder": "D.R. Horton", "phase": "", "street_name": "Maleah Ave"}, {"metro_area": "Oklahoma City, OK", "community_name": "Windstone", "city": "Norman", "builder": "D.R. Horton", "phase": "", "street_name": "Dusty Trail"}, {"metro_area": "Oklahoma City, OK", "community_name": "Windstone", "city": "Norman", "builder": "D.R. Horton", "phase": "", "street_name": "Windstone Dr"}, {"metro_area": "Oklahoma City, OK", "community_name": "Windstone", "city": "Norman", "builder": "D.R. Horton", "phase": "", "street_name": "Windstone Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Buffalo Farms", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Sw 31st Ter"}, {"metro_area": "Oklahoma City, OK", "community_name": "Castlebrook Crossing", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Kathleens Crossing"}, {"metro_area": "Oklahoma City, OK", "community_name": "Castlebrook Crossing", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Kathleens Crossing   Wo"}, {"metro_area": "Oklahoma City, OK", "community_name": "Castlebrook Crossing", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Tracys Manor"}, {"metro_area": "Oklahoma City, OK", "community_name": "Castlebrook Crossing", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Tracys Manor   Window"}, {"metro_area": "Oklahoma City, OK", "community_name": "Fireside Creek", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Campfire Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Fireside Creek", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Ember Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Ne 104th St"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Ne 105th St"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Ne 107th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Tall Prairie Terr"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave At Blackwood Farms", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Blackwood Blvd"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave At Blackwood Farms", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Blackwood Court"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave At Blackwood Farms", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Green Meadows Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Enclave At Blackwood Farms", "city": "Oklahoma City", "builder": "D.R. Horton", "phase": "", "street_name": "Nw 60th St"}, {"metro_area": "Oklahoma City, OK", "community_name": "Autumn Chase At Town Central", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Burlywood Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "Autumn Chase At Town Central", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Mahogany Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Autumn Chase At Town Central", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Red Oak Ln"}, {"metro_area": "Oklahoma City, OK", "community_name": "Rose Rock", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Cherokee Trail"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Brook", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Little Falls Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Brook", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Nw 142nd Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Brook", "city": "Piedmont", "builder": "D.R. Horton", "phase": "", "street_name": "Trickling Way"}, {"metro_area": "Oklahoma City, OK", "community_name": "Horn Valley North", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Casey Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Horn Valley North", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Nw 27th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Horn Valley North", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Nw 28th Terrace"}, {"metro_area": "Oklahoma City, OK", "community_name": "Montereau", "city": "Yukon", "builder": "D.R. Horton", "phase": "", "street_name": "Nw 149th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Antler Creek2", "city": "Edmond", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Covell Ranch", "city": "Edmond", "builder": "Lennar", "phase": "", "street_name": "Norfolk Pine Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Covell Ranch", "city": "Edmond", "builder": "Lennar", "phase": "", "street_name": "Norway Spruce Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Covell Ranch", "city": "Edmond", "builder": "Lennar", "phase": "", "street_name": "Sugar Pine Way"}, {"metro_area": "Oklahoma City, OK", "community_name": "Guthrie Farms", "city": "Guthrie", "builder": "Lennar", "phase": "", "street_name": "Colt Dr"}, {"metro_area": "Oklahoma City, OK", "community_name": "Guthrie Farms", "city": "Guthrie", "builder": "Lennar", "phase": "", "street_name": "Saddle Dr"}, {"metro_area": "Oklahoma City, OK", "community_name": "Riverstone", "city": "Moore", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Creekside Village", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": "Maggie Road"}, {"metro_area": "Oklahoma City, OK", "community_name": "Creekside Village", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": "S.W. 36th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Creekside Village", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": "SW 36th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Enclave At Creekside Village", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Morgan Glen", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": "Dutch Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "Morgan Glen", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": "SW 37th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Morgan Glen", "city": "Mustang", "builder": "Lennar", "phase": "", "street_name": "SW 40th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Newcastle Farms", "city": "Newcastle", "builder": "Lennar", "phase": "", "street_name": "Red Barn Road"}, {"metro_area": "Oklahoma City, OK", "community_name": "Newcastle Farms", "city": "Newcastle", "builder": "Lennar", "phase": "", "street_name": "SW 9th Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Valley Pointe", "city": "Noble", "builder": "Lennar", "phase": "", "street_name": "Caldwell Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Valley Pointe", "city": "Noble", "builder": "Lennar", "phase": "", "street_name": "South Haven Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Villages", "city": "Norman", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Bellflower", "city": "Oklahoma City", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Hefner Crossing", "city": "Oklahoma City", "builder": "Lennar", "phase": "", "street_name": ""}, {"metro_area": "Oklahoma City, OK", "community_name": "Greenhill", "city": "Piedmont", "builder": "Lennar", "phase": "", "street_name": "Harvester Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Greenhill", "city": "Piedmont", "builder": "Lennar", "phase": "", "street_name": "Lovers Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "Greenhill", "city": "Piedmont", "builder": "Lennar", "phase": "", "street_name": "NW 163rd Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Hollow Brook", "city": "Tuttle", "builder": "Lennar", "phase": "", "street_name": "Daxton Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Hollow Brook", "city": "Tuttle", "builder": "Lennar", "phase": "", "street_name": "Nicole Drive"}, {"metro_area": "Oklahoma City, OK", "community_name": "Hollow Brook", "city": "Tuttle", "builder": "Lennar", "phase": "", "street_name": "Silas Dr"}, {"metro_area": "Oklahoma City, OK", "community_name": "Huntington Ridge", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "NW 123rd Street"}, {"metro_area": "Oklahoma City, OK", "community_name": "Huntington Ridge", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "Spruce Knob Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "Redstone Ranch", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "Appaloosa Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "Redstone Ranch", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "Blackjack Road"}, {"metro_area": "Oklahoma City, OK", "community_name": "The Reserve At Mustang Creek", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "Cedar Creek Ave"}, {"metro_area": "Oklahoma City, OK", "community_name": "Tuscany Lakes", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "Florence Lane"}, {"metro_area": "Oklahoma City, OK", "community_name": "Tuscany Lakes", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "Torretta Way"}, {"metro_area": "Oklahoma City, OK", "community_name": "Willow Trails", "city": "Yukon", "builder": "Lennar", "phase": "", "street_name": "SW 25th Street"}];
+const RENTALS = [];
+const TOTALS = [];
+const SALES = [];
+const GENERATED = "2026-08-07";
+const BUILDER_ORDER = ["D.R. Horton", "Lennar"];
+
+const TOTALS_BY_KEY = new Map(TOTALS.map(t => [t.community_name + '|' + t.builder, t]));
+
+document.getElementById('generated-date').textContent = GENERATED;
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s == null ? '' : s;
+  return d.innerHTML;
+}
+function fmtMoney(v) {
+  if (!v) return '';
+  const n = parseFloat(v);
+  if (isNaN(n)) return v;
+  return '$' + n.toLocaleString('en-US');
+}
+function statusClass(s) {
+  if (s === 'currently for rent') return 'active';
+  if (s === 'previously rented') return 'past';
+  return 'unknown';
+}
+function statusLabel(s) {
+  if (s === 'currently for rent') return 'For rent';
+  if (s === 'previously rented') return 'Previously rented';
+  return 'Unknown';
+}
+function blankOr(v) {
+  return v ? esc(v) : '<span class="blank">—</span>';
+}
+function sourceCell(src) {
+  if (!src) return '<span class="blank">—</span>';
+  return src.split(' | ').map(p => {
+    if (p.startsWith('http')) {
+      let label = 'Zillow';
+      try { label = new URL(p).hostname.replace('www.', '').split('.')[0]; label = label.charAt(0).toUpperCase() + label.slice(1); } catch (e) {}
+      return `<span class="src"><a href="${esc(p)}" target="_blank" rel="noopener">${label}</a></span>`;
+    }
+    return `<span class="src"><span title="${esc(p)}">${esc(p)}</span></span>`;
+  }).join(' ');
+}
+
+/* ---- Group communities by builder, then by community name only ----
+   A single community can have streets from different phases (phase gets
+   detected per-street from whatever subdivision text that street's
+   source used, e.g. "PHASE 1" vs "PHASE 2" vs no phase at all) - phase
+   is a per-street fact, not something that should split one community
+   into multiple dashboard entries. Every phase seen is collected and
+   shown together instead. */
+function buildModel() {
+  const byBuilder = {};
+  for (const b of BUILDER_ORDER) byBuilder[b] = new Map();
+
+  const findOrCreateEntry = (builderMap, communityName, builder) => {
+    if (!builderMap.has(communityName)) {
+      builderMap.set(communityName, { name: communityName, builder, city: '', phases: new Set(), streets: [], rentals: [], sales: [] });
+    }
+    return builderMap.get(communityName);
+  };
+
+  for (const c of COMMUNITIES) {
+    const builderMap = byBuilder[c.builder] || (byBuilder[c.builder] = new Map());
+    const entry = findOrCreateEntry(builderMap, c.community_name, c.builder);
+    if (c.phase) entry.phases.add(c.phase);
+    if (c.street_name) entry.streets.push(c.street_name);
+    if (c.city && !entry.city) entry.city = c.city;
+  }
+  for (const r of RENTALS) {
+    const builderMap = byBuilder[r.builder];
+    if (!builderMap) continue;
+    findOrCreateEntry(builderMap, r.community_name, r.builder).rentals.push(r);
+  }
+  for (const s of SALES) {
+    const builderMap = byBuilder[s.builder];
+    if (!builderMap) continue;
+    findOrCreateEntry(builderMap, s.community_name, s.builder).sales.push(s);
+  }
+  return byBuilder;
+}
+
+function communityMatches(entry, q) {
+  if (!q) return true;
+  q = q.toLowerCase();
+  if (entry.name.toLowerCase().includes(q)) return true;
+  if (entry.streets.some(s => s.toLowerCase().includes(q))) return true;
+  if (entry.rentals.some(r => r.full_address.toLowerCase().includes(q))) return true;
+  if (entry.sales.some(s => s.full_address.toLowerCase().includes(q))) return true;
+  return false;
+}
+
+function bedsSqftLabel(r) {
+  const parts = [];
+  if (r.bedrooms) parts.push(`${esc(r.bedrooms)}bd`);
+  if (r.sqft) parts.push(`${parseInt(r.sqft, 10).toLocaleString('en-US')}sf`);
+  return parts.length ? parts.join(' &middot; ') : '<span class="blank">—</span>';
+}
+
+function rentalRowHtml(r) {
+  return `
+    <tr>
+      <td class="mono">${esc(r.full_address)}</td>
+      <td class="mono">${bedsSqftLabel(r)}</td>
+      <td class="num mono">${blankOr(fmtMoney(r.rent_price))}</td>
+      <td>
+        <span class="pill ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+        ${r.status_changed ? `<div class="mono" style="font-size:10px;color:var(--ink-faint);margin-top:4px">${esc(r.status_changed)}</div>` : ''}
+      </td>
+      <td class="mono">${blankOr(r.list_date)}</td>
+      <td class="mono">${blankOr(r.rent_date)}</td>
+      <td class="num mono">${blankOr(r.days_on_market)}</td>
+      <td>${sourceCell(r.source_url)}</td>
+    </tr>`;
+}
+
+function saleStatusClass(bucket) {
+  if (bucket === 'sold') return 'past';
+  if (bucket === 'under_contract') return 'unknown';
+  if (bucket === 'for_sale') return 'active';
+  return 'unknown';
+}
+function saleStatusLabel(bucket) {
+  if (bucket === 'sold') return 'Sold';
+  if (bucket === 'under_contract') return 'Under contract';
+  if (bucket === 'for_sale') return 'For sale';
+  if (bucket === 'withdrawn') return 'Withdrawn';
+  if (bucket === 'expired') return 'Expired';
+  if (bucket === 'to_be_built') return 'To be built';
+  return 'Other';
+}
+function saleRowHtml(s) {
+  return `
+    <tr>
+      <td class="mono">${esc(s.full_address)}</td>
+      <td class="mono">${bedsSqftLabel(s)}</td>
+      <td class="num mono">${blankOr(fmtMoney(s.list_price))}</td>
+      <td class="num mono">${blankOr(fmtMoney(s.price))}</td>
+      <td>
+        <span class="pill ${saleStatusClass(s.status_bucket)}">${saleStatusLabel(s.status_bucket)}</span>
+        ${s.status_changed ? `<div class="mono" style="font-size:10px;color:var(--ink-faint);margin-top:4px">${esc(s.status_changed)}</div>` : ''}
+      </td>
+      <td class="mono">${blankOr(s.input_date)}</td>
+      <td class="mono">${blankOr(s.closed_date)}</td>
+    </tr>`;
+}
+
+function pipelineHtml(entry) {
+  const t = TOTALS_BY_KEY.get(entry.name + '|' + entry.builder);
+  if (!t) return '';
+
+  const sold = parseInt(t.sold_count, 10) || 0;
+  const uc = parseInt(t.under_contract_count, 10) || 0;
+  const forSale = parseInt(t.for_sale_count, 10) || 0;
+  const expired = parseInt(t.expired_count, 10) || 0;
+  const withdrawn = parseInt(t.withdrawn_count, 10) || 0;
+  const planned = t.total_homes_planned ? parseInt(t.total_homes_planned, 10) : null;
+  const pct = t.pct_sold ? `${t.pct_sold}%` : null;
+
+  const parts = [];
+  parts.push(`<span class="pipe-stat"><b>${sold}</b> sold${pct ? ` (${pct})` : ''}</span>`);
+  if (uc) parts.push(`<span class="pipe-stat"><b>${uc}</b> under contract</span>`);
+  if (forSale) parts.push(`<span class="pipe-stat"><b>${forSale}</b> for sale</span>`);
+  if (expired) parts.push(`<span class="pipe-stat pipe-planned">${expired} expired</span>`);
+  if (withdrawn) parts.push(`<span class="pipe-stat pipe-planned">${withdrawn} withdrawn</span>`);
+  if (planned) parts.push(`<span class="pipe-stat pipe-planned">of <b>${planned}</b> planned</span>`);
+
+  return `<div class="community-pipeline">${parts.join('<span class="pipe-sep">&middot;</span>')}</div>`;
+}
+
+function communityHtml(entry, idx) {
+  const total = entry.rentals.length;
+  const counts = { active: 0, past: 0, unknown: 0 };
+  for (const r of entry.rentals) counts[statusClass(r.status)]++;
+
+  const pills = [
+    counts.active ? `<span class="mini-pill active">${counts.active} for rent</span>` : '',
+    counts.past ? `<span class="mini-pill past">${counts.past} past</span>` : '',
+    counts.unknown ? `<span class="mini-pill unknown">${counts.unknown} unknown</span>` : '',
+  ].join('');
+
+  const streetsLine = entry.streets.length
+    ? entry.streets.join(', ')
+    : 'No confirmed streets yet';
+
+  const rentalsBody = total
+    ? `<div class="table-scroll"><table>
+        <thead><tr>
+          <th>Address</th><th>Beds/Sqft</th><th class="num">Rent</th><th>Status</th>
+          <th>Listed</th><th>Rented/removed</th><th class="num">Days</th><th>Source</th>
+        </tr></thead>
+        <tbody>${entry.rentals.map(rentalRowHtml).join('')}</tbody>
+      </table></div>`
+    : `<div class="no-rentals">No rental activity recorded yet.</div>`;
+
+  const salesBody = entry.sales.length
+    ? `<div class="table-scroll"><table>
+        <thead><tr>
+          <th>Address</th><th>Beds/Sqft</th><th class="num">List price</th><th class="num">Price</th>
+          <th>Status</th><th>Input date</th><th>Closed date</th>
+        </tr></thead>
+        <tbody>${[...entry.sales].sort((a, b) => (b.input_date || '').localeCompare(a.input_date || '')).map(saleRowHtml).join('')}</tbody>
+      </table></div>`
+    : '';
+
+  const body = `
+    <div class="body-section">
+      <div class="body-section-label">Rentals</div>
+      ${rentalsBody}
+    </div>
+    ${entry.sales.length ? `
+    <div class="body-section">
+      <div class="body-section-label">For-sale activity (${entry.sales.length})</div>
+      ${salesBody}
+    </div>` : ''}`;
+
+  return `
+    <div class="community" data-idx="${idx}">
+      <div class="community-head">
+        <span class="chevron"></span>
+        <div class="community-name-block">
+          <div class="community-name">${esc(entry.name)}${entry.city ? `<span class="community-city">${esc(entry.city)}</span>` : ''}${[...entry.phases].sort().map(p => `<span class="phase-tag">${esc(p)}</span>`).join('')}</div>
+          <div class="community-streets">${esc(streetsLine)}</div>
+          <div class="rental-summary">
+            <div class="mini-pills">${pills}</div>
+            <div class="rental-total ${total ? '' : 'zero'}">${total}</div>
+          </div>
+        </div>
+        ${pipelineHtml(entry)}
+      </div>
+      <div class="community-body">${body}</div>
+    </div>`;
+}
+
+function render() {
+  const q = document.getElementById('search').value.trim();
+  const model = buildModel();
+  const groupsEl = document.getElementById('builder-groups');
+  let html = '';
+  let globalIdx = 0;
+  let anyResults = false;
+
+  for (const builder of BUILDER_ORDER) {
+    const entries = [...(model[builder] || new Map()).values()]
+      .filter(e => communityMatches(e, q))
+      .sort((a, b) => {
+        const ta = TOTALS_BY_KEY.get(a.name + '|' + a.builder);
+        const tb = TOTALS_BY_KEY.get(b.name + '|' + b.builder);
+        const forSaleA = ta ? (parseInt(ta.for_sale_count, 10) || 0) : 0;
+        const forSaleB = tb ? (parseInt(tb.for_sale_count, 10) || 0) : 0;
+        if (forSaleB !== forSaleA) return forSaleB - forSaleA;
+        const ucA = ta ? (parseInt(ta.under_contract_count, 10) || 0) : 0;
+        const ucB = tb ? (parseInt(tb.under_contract_count, 10) || 0) : 0;
+        if (ucB !== ucA) return ucB - ucA;
+        return a.name.localeCompare(b.name);
+      });
+    if (!entries.length) continue;
+    anyResults = true;
+    const totalRentals = entries.reduce((s, e) => s + e.rentals.length, 0);
+    html += `
+      <section class="builder-group">
+        <div class="builder-head">
+          <h2>${esc(builder)}</h2>
+          <span class="totals">${entries.length} ${entries.length === 1 ? 'community' : 'communities'} &middot; ${totalRentals} ${totalRentals === 1 ? 'rental' : 'rentals'}</span>
+          <span class="rule"></span>
+        </div>
+        <div class="community-list">
+          ${entries.map(e => communityHtml(e, globalIdx++)).join('')}
+        </div>
+      </section>`;
+  }
+
+  groupsEl.innerHTML = anyResults ? html : '<div class="empty-state">No communities match your search.</div>';
+
+  groupsEl.querySelectorAll('.community-head').forEach(head => {
+    head.addEventListener('click', () => {
+      head.parentElement.classList.toggle('expanded');
+    });
+  });
+}
+
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('expand-all').addEventListener('click', () => {
+  document.querySelectorAll('.community').forEach(c => c.classList.add('expanded'));
+});
+document.getElementById('collapse-all').addEventListener('click', () => {
+  document.querySelectorAll('.community').forEach(c => c.classList.remove('expanded'));
+});
+
+render();
+</script>

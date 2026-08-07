@@ -26,7 +26,7 @@ _CITY_RE = re.compile(r'"addressLocality"\s*:\s*"([^"]+)"', re.IGNORECASE)
 
 
 def _slug_to_title(slug):
-    return " ".join(w.capitalize() for w in slug.split("-"))
+    return " ".join(w.capitalize() for w in slug.split("-") if w)
 
 
 def _qmi_slug_to_street(slug):
