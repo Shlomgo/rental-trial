@@ -188,6 +188,15 @@ def _build_row_v2(metro_config, match, row, today):
         source_url = f"https://www.zillow.com{hdp}" if hdp.startswith("/") else hdp
     days_on_market = _days_between(list_date, rent_date) or (row.get("daysOnZillow") or "")
 
+    # price/listingPrice/amount are only a rent figure while the listing is
+    # actually FOR_RENT - once it's left the rental market (sold, off
+    # market, ...) those same fields hold whatever price that other status
+    # means (e.g. a sale price), and blindly reusing them as rent produces
+    # nonsense like a "$191,000/month" rent. Leave rent_price blank rather
+    # than guess in that case.
+    home_status = (row.get("homeStatus") or "").upper()
+    rent_price = (row.get("listingPrice/amount") or row.get("price") or "") if home_status == "FOR_RENT" else ""
+
     return {
         "metro_area": metro_config.METRO_AREA,
         "community_name": match["community_name"],
@@ -198,7 +207,7 @@ def _build_row_v2(metro_config, match, row, today):
         "bedrooms": row.get("bedrooms") or "",
         "sqft": row.get("livingArea") or "",
         "purchase_price": row.get("lastSoldPrice") or "",
-        "rent_price": row.get("listingPrice/amount") or row.get("price") or "",
+        "rent_price": rent_price,
         "list_date": list_date,
         "rent_date": rent_date,
         "days_on_market": days_on_market,
