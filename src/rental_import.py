@@ -153,11 +153,27 @@ def _wide_price_history(row):
     return history
 
 
+def _normalize_home_status(row):
+    """Newer zillow-detail-scraper builds (seen from 2026-09) omit the
+    enum-style `homeStatus` field (e.g. "FOR_RENT") this schema was written
+    against, and instead only carry a camelCase `listingStatus` (e.g.
+    "forRent"). Prefer `homeStatus` when present; otherwise convert
+    `listingStatus`'s camelCase into the same SHOUTY_SNAKE_CASE shape so
+    the rest of this module doesn't need to know which one it got."""
+    home_status = (row.get("homeStatus") or "").upper()
+    if home_status:
+        return home_status
+    listing_status = (row.get("listingStatus") or "").strip()
+    if listing_status:
+        return re.sub(r"(?<!^)(?=[A-Z])", "_", listing_status).upper()
+    return ""
+
+
 def _wide_status_and_dates(row, today):
     """Returns (status, list_date, rent_date). Prefers the price-history
     log (real listed/removed dates) over the daysOnZillow estimate used for
     schema v1, since this schema happens to carry it."""
-    home_status = (row.get("homeStatus") or "").upper()
+    home_status = _normalize_home_status(row)
     history = _wide_price_history(row)
     listed_date = next((d for d, e in history if "listed" in e.lower()), "")
     left_market_date = history[0][0] if history and "listed" not in history[0][1].lower() else ""
@@ -194,7 +210,7 @@ def _build_row_v2(metro_config, match, row, today):
     # means (e.g. a sale price), and blindly reusing them as rent produces
     # nonsense like a "$191,000/month" rent. Leave rent_price blank rather
     # than guess in that case.
-    home_status = (row.get("homeStatus") or "").upper()
+    home_status = _normalize_home_status(row)
     rent_price = (row.get("listingPrice/amount") or row.get("price") or "") if home_status == "FOR_RENT" else ""
 
     return {
