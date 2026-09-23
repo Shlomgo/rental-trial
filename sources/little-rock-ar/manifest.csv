@@ -9,7 +9,7 @@ apify-drive-1lmCzE3h.csv,apify,"Drive/Apify Uploads - Zillow Maumelle (search re
 apify-drive-1xi6E5R0.csv,apify,"Drive/Apify Uploads - Zillow Maumelle (detail pages, created 2026-08-03T21:10Z)",2026-08-03
 apify-drive-1pzhwomFp.csv,apify,"Drive/Apify Uploads - Zillow Maumelle (detail pages, created 2026-08-03T21:10Z)",2026-08-03
 mls-2026-08-03.csv,mls,"MLS rental/lease export, batch 3 (statewide)",2026-08-03
-manual-entries.csv,manual,Listings pasted directly in chat (no original export file),2026-08-04
+manual-entries.csv,manual,"Listings pasted directly in chat (no original export file); 8 rows appended 2026-09-23 recovered from the live dashboard artifact's embedded RENTALS data (7 addresses + 1 status fix that existed on the published Little Rock dashboard as of 2026-09-19 but were never in any registered source file - a prior session imported them and published but apparently never committed/pushed, so the only surviving record was the live page itself)",2026-08-04
 apify-drive-3.csv,apify,"Zillow Maumelle export, batch 3 (uploaded directly)",2026-08-03
 apify-drive-5.csv,apify,"Zillow Maumelle export, batch 5 (uploaded directly)",2026-08-04
 apify-run-2026-08-04.csv,apify,Apify actor runs 34n6rBUHifdpFK36L + HH4Zc6uuQyH1ir21Z (2026-08-04T18:10Z),2026-08-04
@@ -42,3 +42,4 @@ apify-run-2026-09-14.csv,apify,"Apify actor runs 2026-09-14 (2-run day: f8flf2An
 apify-run-2026-09-16.csv,apify,"Apify actor runs 2026-09-16 (2-run day: aHxI7JppaxjSOfffP + pJAQoT9IdcOlCRK5R, 12:36Z)",2026-09-18
 apify-run-2026-09-17-batch.csv,apify,"Apify actor runs 2026-09-17 (17-run day, 18:12Z-18:42Z: hASqruoTLSI5SmlEk, eSnp2x5vgb8XSf4dg, TXoTtIGgkrSUp8dlY, hJXktDnS1jhRsKpXA, RgFYgdxd0z8v2tXJD, PgEiSiC3A4N5z8WCV, 9adjbcWi71VqRh9A3, KlvP28LpJxAb06kzh, bmXJSeqIOmWp0S70a, gf61OMHNgZfzA6PsJ, Ridbdmg9NAdA86C1Z, HNJac0nLlRaJfX6Tz, zNAOevXb7gIRI5m0x, wFCKKDAfQlccguIHD, llqJi7jj8n8Sdl0l1, A5cPwH12yomJxFIn4, S6NButs74dJsH5CFO)",2026-09-18
 apify-run-2026-09-18-batch.csv,apify,"Apify actor runs 2026-09-18 (16-run day, 11:23Z-12:36Z: HGfsDY2kEP2c9CwHf, 8WZj14ComIAc9MpMR, dCG0vmA7xYfEdgzjy, 5gBNQZXgqtCtSFXrf, KepuwNnDggNcQLJY4, ckLpqxGO71RzqAYBR, DMxFlDE3wd09d005a, OUlAZA7ZmJgca24bS, fS1zeGkePa4LhgLcM, aelNbglbM1lz1rePw, iQSaGTAF5aRbfyNGt, 9UO1aiNNlkgth5kvT, IlpZSOfdaKh7yjN9m, a4Ewtxg5U5IhtPcMa, 8saI3P4eIfKrGbmUp, 4UrIcPGJH2VEUegkl)",2026-09-18
+apify-run-2026-09-23-batch.csv,apify,"Apify actor runs bKENuA6x2TFWUQ6uh + 58xr2uy3qL5hWqBAO (2026-09-23T12:36Z, 582 items combined, mixed AR/NC)",2026-09-23
