@@ -232,12 +232,18 @@ def _build_row_v2(metro_config, match, row, today):
     }
 
 
+def _metro_state(metro_config):
+    """2-letter state abbreviation from METRO_AREA (e.g. "Hickory, NC" -> "NC")."""
+    return metro_config.METRO_AREA.rsplit(",", 1)[-1].strip().upper()
+
+
 def import_rental_export(export_csv_path, metro_config, known_streets, today=None):
     """Returns (matched_rows, unmatched_count). matched_rows are dicts with
     RENTALS_COLUMNS keys (minus last_checked_date/status_changed, which the
     caller/csv_io fills in). Auto-detects which of the two known Apify
     Zillow export schemas the file uses."""
     today = today or datetime.date.today()
+    metro_state = _metro_state(metro_config)
     matched_rows = []
     unmatched = 0
 
@@ -248,6 +254,17 @@ def import_rental_export(export_csv_path, metro_config, known_streets, today=Non
             street_guess = _wide_row_street_guess(row) if is_wide else _street_guess_v1(row)
             match = _match_street(street_guess, known_streets)
             if not match:
+                unmatched += 1
+                continue
+
+            # A generic street name (e.g. "Charles St") can legitimately match
+            # a known street's normalized form (e.g. "Charles Street Nw") via
+            # the word-boundary check while actually being an unrelated
+            # address in a different state entirely - the matcher has no
+            # other signal to rule that out. Reject the match rather than
+            # misfile another metro's listing into this one.
+            row_state = (row.get("listingAddress/state") or "").strip().upper() if is_wide else ""
+            if row_state and row_state != metro_state:
                 unmatched += 1
                 continue
 
