@@ -162,6 +162,20 @@ shouldn't be reported as such.
   analogous new-street-candidate dedup check in `sales_import.py`/
   `mls_import.py`. If you ever touch street matching, keep the word-boundary
   behavior.
+- **`rental_import.py`'s word-boundary street match still let same-state,
+  different-city false positives through** - it only guarded against a
+  cross-*state* false match (`listingAddress/state` vs the metro's state),
+  not a same-state one. This let a Raleigh, NC listing ("1819 Charles St")
+  word-boundary-match Hickory-metro's "Charles Street Nw" (Conover, NC,
+  ~150mi away) since both are just "NC". Fixed by also rejecting a match
+  whose `listingAddress/city` isn't in `metro_config.CITIES` (the same
+  metro-boundary list `builders/dr_horton.py`/`lennar.py` already filter
+  discovery against) - see the `metro_cities` check in
+  `import_rental_export`. `sales_import.py`/`mls_import.py` don't need the
+  analogous fix: `mls_import.py` already filters every row by City before
+  matching, and `sales_import.py`'s MLS exports come pre-scoped to one
+  metro's board (no multi-metro mixing to guard against, unlike the
+  multi-metro Apify exports this bug came from).
 - **Address dedup key used to strip *any* 5-digit number, not just a
   trailing zip** (`\b\d{5}\b` unanchored), so a 5-digit house number (e.g.
   "10805 Mason Drive") collided with a different address on the same street.

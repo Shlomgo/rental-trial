@@ -244,6 +244,7 @@ def import_rental_export(export_csv_path, metro_config, known_streets, today=Non
     Zillow export schemas the file uses."""
     today = today or datetime.date.today()
     metro_state = _metro_state(metro_config)
+    metro_cities = {c.lower() for c in getattr(metro_config, "CITIES", [])}
     matched_rows = []
     unmatched = 0
 
@@ -265,6 +266,17 @@ def import_rental_export(export_csv_path, metro_config, known_streets, today=Non
             # misfile another metro's listing into this one.
             row_state = (row.get("listingAddress/state") or "").strip().upper() if is_wide else ""
             if row_state and row_state != metro_state:
+                unmatched += 1
+                continue
+
+            # Same-state false positives slip past the state guard above -
+            # e.g. "1819 Charles St, Raleigh, NC" word-boundary-matched
+            # Hickory-metro's "Charles Street Nw" (Conover, NC) purely
+            # because both are in NC. metro_config.CITIES is the same
+            # metro-boundary list builders/dr_horton.py and lennar.py
+            # already filter discovery against - apply it here too.
+            row_city = (row.get("listingAddress/city") or "").strip() if is_wide else ""
+            if row_city and metro_cities and row_city.lower() not in metro_cities:
                 unmatched += 1
                 continue
 
