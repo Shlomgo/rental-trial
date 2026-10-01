@@ -1,3 +1,4 @@
 filename,source_type,label,added_date
 apify-run-2026-09-08-batch.csv,apify,"Apify actor runs 2026-09-04T12:54Z - 2026-09-08T13:02Z (63-run backlog; lKHQnbghAtnAdO6qq..inNBEzXoKi37bw4DF; 4 unavailable: q5SBhZsETNgFMagnS, EnprtBT8mJq9LNB94, 3Pf29bySNd8oM0cYR, dG1p9q5WH7uHAcow3)",2026-09-08
 apify-run-2026-09-27-batch.csv,apify,Apify actor runs 2026-09-26T18:38Z - 2026-09-27T04:09Z (123-run batch after the eSO6GENocokQ5K5OZ+yCFAsh5Yg0izTkEM3 boundary; 13359 items combined),2026-09-27
+apify-run-2026-09-28-batch.csv,apify,"Apify actor runs 2026-09-28 (6 of 13 runs after 2026-09-27T04:09Z: g4CbfTq6, hLOIirfx, nsvZ5joO, FyIts5TY, S7e77nvX, yps9vfN9; 1191 items, AR/NC)",2026-10-01
